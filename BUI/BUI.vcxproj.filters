@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Head Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Head Files\Core">
+      <UniqueIdentifier>{68ef0f5f-6c31-4559-b644-b6f0b34c3d6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{d418fab5-cb63-4c8a-b56d-34b3c9508b0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Head Files\Render">
+      <UniqueIdentifier>{082272a0-a8e2-4551-95fb-7de43e1598eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render">
+      <UniqueIdentifier>{6ded09b6-7489-4eb7-9ad9-76a1a7b40d51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Head Files\Utils">
+      <UniqueIdentifier>{c8c86b14-6332-4f29-a9d6-6cfb43a834fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{8e7ce72e-0d54-43ad-ad8d-010bba31e3ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Widget">
+      <UniqueIdentifier>{34e1ad3c-7962-4ad9-8057-138b5042fec3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Head Files\Widget">
+      <UniqueIdentifier>{a053ea06-458e-4960-9fcb-3defb25ed9b0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BUI.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BProcessResources.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="BUIWindow.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="BMsgDef.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="BRenderEngineManager.h">
+      <Filter>Head Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="BRenderEngineDef.h">
+      <Filter>Head Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="BEncodingTranslation.h">
+      <Filter>Head Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="BRenderEngineGdiPlus.h">
+      <Filter>Head Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="BUIObject.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="BUIWidget.h">
+      <Filter>Head Files\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="BUIWidgetDef.h">
+      <Filter>Head Files\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="BUIManager.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BSmartPointer.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BProcessResources.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="BUIWindow.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="BRenderEngineManager.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="BEncodingTranslation.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="BRenderEngineGdiPlus.cpp">
+      <Filter>Source Files\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="BUIWidget.cpp">
+      <Filter>Source Files\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="BUIManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BSmartPointer.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
