@@ -103,7 +103,6 @@
     <ClCompile Include="BRenderEngineGdiPlus.cpp" />
     <ClCompile Include="BRenderEngineManager.cpp" />
     <ClCompile Include="BSingleton.cpp" />
-    <ClCompile Include="BSmartPointer.cpp" />
     <ClCompile Include="BUI.cpp" />
     <ClCompile Include="BUIManager.cpp" />
     <ClCompile Include="BUIWidget.cpp" />

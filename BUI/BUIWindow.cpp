@@ -74,6 +74,8 @@ LRESULT BUIWindow::MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		WINMsgFunction func = static_cast<WINMsgFunction>(it->second);
 		return (this->*func)(uMsg, wParam, lParam);
 	}
+
+	return 0;
 }
 
 LRESULT BUIWindow::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam)

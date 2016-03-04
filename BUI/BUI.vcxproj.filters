@@ -81,9 +81,6 @@
     <ClInclude Include="BUIWidgetDef.h">
       <Filter>Head Files\Widget</Filter>
     </ClInclude>
-    <ClInclude Include="BUIManager.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
     <ClInclude Include="BSmartPointer.h">
       <Filter>Head Files\Core</Filter>
     </ClInclude>
@@ -92,6 +89,9 @@
     </ClInclude>
     <ClInclude Include="BSingleton.h">
       <Filter>Head Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="BUIManager.h">
+      <Filter>Head Files\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -119,14 +119,11 @@
     <ClCompile Include="BUIWidget.cpp">
       <Filter>Source Files\Widget</Filter>
     </ClCompile>
-    <ClCompile Include="BUIManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BSmartPointer.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="BSingleton.cpp">
       <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="BUIManager.cpp">
+      <Filter>Source Files\Core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

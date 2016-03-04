@@ -2,15 +2,18 @@
 #include "BSingleton.h"
 
 template<typename T>
-T* BSingleton<T>::m_instance;
+BShareRefPtr<T> BSingleton<T>::m_instance;
 
 template<typename T>
-T* BSingleton<T>::Instance()
+BShareRefPtr<T> BSingleton<T>::Instance()
 {
 	if (m_instance == NULL)
 	{
-		T* temp = new BSingleton<T>;
-		m_instance = temp;
+		BShareRefPtr<T> temp(new BSingleton<T>);
+		if (m_instance == NULL)
+		{
+			m_instance = temp;
+		}
 	}
 
 	return m_instance;
