@@ -12,6 +12,7 @@ int APIENTRY WinMain(HINSTANCE hinst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int 
 {
 	BProcessResources::GetInstance()->SetProcessInstance(hinst);
 	BProcessResources::GetInstance()->SetResourcesPath(L"123");
+	BShareRefPtr<TestWindow> test;
 
 	RECT rc;
 	rc.left = 500;

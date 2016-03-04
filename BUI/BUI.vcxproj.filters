@@ -87,6 +87,12 @@
     <ClInclude Include="BSmartPointer.h">
       <Filter>Head Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="BUIDef.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BSingleton.h">
+      <Filter>Head Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -118,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="BSmartPointer.cpp">
       <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="BSingleton.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

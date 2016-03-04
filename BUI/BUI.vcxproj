@@ -85,8 +85,10 @@
     <ClInclude Include="BRenderEngineDef.h" />
     <ClInclude Include="BRenderEngineGdiPlus.h" />
     <ClInclude Include="BRenderEngineManager.h" />
+    <ClInclude Include="BSingleton.h" />
     <ClInclude Include="BSmartPointer.h" />
     <ClInclude Include="BUI.h" />
+    <ClInclude Include="BUIDef.h" />
     <ClInclude Include="BUIManager.h" />
     <ClInclude Include="BUIObject.h" />
     <ClInclude Include="BUIWidget.h" />
@@ -100,6 +102,7 @@
     <ClCompile Include="BProcessResources.cpp" />
     <ClCompile Include="BRenderEngineGdiPlus.cpp" />
     <ClCompile Include="BRenderEngineManager.cpp" />
+    <ClCompile Include="BSingleton.cpp" />
     <ClCompile Include="BSmartPointer.cpp" />
     <ClCompile Include="BUI.cpp" />
     <ClCompile Include="BUIManager.cpp" />

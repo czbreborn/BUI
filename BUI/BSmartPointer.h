@@ -1,7 +1,7 @@
 #pragma once
 #include "BUI.h"
 
-class BRefCount
+class BUI_API BRefCount
 {
 public:
 	BRefCount();
@@ -32,7 +32,7 @@ public:
 	BShareRefPtr<T>& operator=(const BShareRefPtr<U>& src);
 
 	void Reset();
-	T* GetObject();
+	T* GetObject() const;
 
 public:
 	T* operator->() const;

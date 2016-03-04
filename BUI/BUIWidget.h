@@ -38,7 +38,7 @@ public:
 	virtual int GetY() const;
 
 	// 提示信息
-	virtual bstring GetToolTip() const;
+	virtual LPCTSTR GetToolTip() const;
 	virtual void SetToolTip(LPCTSTR tip);
 
 	// 绘制相关
