@@ -75,7 +75,7 @@ LRESULT BUIWindow::MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		return (this->*func)(uMsg, wParam, lParam);
 	}
 
-	return 0;
+	return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
 }
 
 LRESULT BUIWindow::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -108,11 +108,13 @@ LRESULT CALLBACK BUIWindow::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
 	{
 		LPCREATESTRUCT lpcs = reinterpret_cast<LPCREATESTRUCT>(lParam);
 		pThis = static_cast<BUIWindow*>(lpcs->lpCreateParams);
+		pThis->m_hwnd = hwnd;
 	}
 
 	if (pThis != NULL)
 	{
-		return pThis->MessageRouting(uMsg, wParam, lParam);
+		LRESULT ret = pThis->MessageRouting(uMsg, wParam, lParam);
+		return ret;
 	}
 
 	return ::DefWindowProc(hwnd, uMsg, wParam, lParam);

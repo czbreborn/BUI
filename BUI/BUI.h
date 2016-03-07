@@ -29,8 +29,6 @@ using namespace std;
 #include "BProcessResources.h"
 #include "BRenderEngineManager.h"
 #include "BMsgDef.h"
-#include "BSmartPointer.h"
-#include "BSingleton.h"
 
 #include "BUIObject.h"
 #include "BUIWindow.h"
