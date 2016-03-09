@@ -1,12 +1,21 @@
+#ifndef __BUIDEF_H__
+#define __BUIDEF_H__
+
 #pragma once
 
-// forbidden copy
-class BUI_API BNoCopy
-{
-public:
-	BNoCopy() {};
+namespace BUI{
+	// forbidden copy
+	class BUI_API BNoCopy
+	{
+	public:
+		BNoCopy() {};
 
-private:
-	BNoCopy(const BNoCopy& b);
-	BNoCopy& operator=(const BNoCopy& b);
-};
+		virtual void Clone() {};
+
+	private:
+		BNoCopy(const BNoCopy& b);
+		BNoCopy& operator=(const BNoCopy& b);
+	};
+}
+
+#endif

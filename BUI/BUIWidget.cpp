@@ -1,125 +1,170 @@
 #include "stdafx.h"
-#include "BUIWidget.h"
-#include "BUIWidgetDef.h"
 
-BUIWidget::BUIWidget()
-	: m_widgetName(L"")
-{
-}
+namespace BUI{
+	BUIWidget::BUIWidget()
+		: m_widgetName(_T("")),
+		m_strText(_T("")),
+		m_bkColor(0),
+		m_bkColor2(0),
+		m_imageFileName(_T("")),
+		m_toolTip(_T(""))
+	{
+		m_rcItem.left = m_rcItem.right = m_rcItem.top = m_rcItem.bottom = 0;
+		m_xy.cx = m_xy.cy = 0;
+		m_rcPaint.left = m_rcPaint.right = m_rcPaint.top = m_rcPaint.bottom = 0;
+	}
 
 
-BUIWidget::~BUIWidget()
-{
-}
+	BUIWidget::~BUIWidget()
+	{
+	}
 
-bstring BUIWidget::GetName() const
-{
-	return m_widgetName;
-}
-void BUIWidget::SetName(LPCTSTR name)
-{
-	m_widgetName = name;
-}
+	bstring BUIWidget::GetName()
+	{
+		return m_widgetName;
+	}
+	void BUIWidget::SetName(LPCTSTR name)
+	{
+		m_widgetName = name;
+	}
 
-LPCTSTR BUIWidget::GetType() const
-{
-	return BUI_WIN_WIDGET;
-}
+	LPCTSTR BUIWidget::GetType()
+	{
+		return BUI_WIN_WIDGET;
+	}
 
-LPVOID BUIWidget::GetInterface(LPCTSTR name)
-{
-	return this;
-}
+	LPVOID BUIWidget::GetInterface(LPCTSTR name)
+	{
+		return this;
+	}
 
-bstring BUIWidget::GetText() const
-{
-	return m_strText;
-}
-void BUIWidget::SetText(LPCTSTR text)
-{
-	m_strText = text;
-}
+	LPCTSTR BUIWidget::GetText()
+	{
+		return m_strText.c_str();
+	}
+	void BUIWidget::SetText(LPCTSTR text)
+	{
+		m_strText = text;
+	}
 
-// 图形相关
-DWORD BUIWidget::GetBkColor() const
-{
-	return m_bkColor;
-}
+	// 图形相关
+	DWORD BUIWidget::GetBkColor()
+	{
+		return m_bkColor;
+	}
 
-void BUIWidget::SetBkColor(DWORD bkColor)
-{
-	m_bkColor = bkColor;
-}
+	void BUIWidget::SetBkColor(DWORD bkColor)
+	{
+		m_bkColor = bkColor;
+	}
 
-DWORD BUIWidget::GetBkColor2() const
-{
-	return m_bkColor2;
-}
+	DWORD BUIWidget::GetBkColor2()
+	{
+		return m_bkColor2;
+	}
 
-void BUIWidget::SetBkColor2(DWORD bkColor)
-{
-	m_bkColor2 = bkColor;
-}
+	void BUIWidget::SetBkColor2(DWORD bkColor)
+	{
+		m_bkColor2 = bkColor;
+	}
 
-LPCTSTR BUIWidget::GetBkImage() const
-{
-	return m_imageFileName.c_str();
-}
+	LPCTSTR BUIWidget::GetBkImage()
+	{
+		return m_imageFileName.c_str();
+	}
 
-void BUIWidget::SetBkImage(LPCTSTR pstrImage)
-{
-	m_imageFileName = pstrImage;
-}
+	void BUIWidget::SetBkImage(LPCTSTR pstrImage)
+	{
+		m_imageFileName = pstrImage;
+	}
 
-// 位置相关
-const RECT& BUIWidget::GetPos() const
-{
-	return m_rcItem;
-}
+	// 位置相关
+	const RECT& BUIWidget::GetPos()
+	{
+		return m_rcItem;
+	}
 
-RECT BUIWidget::GetClientPos() const
-{
-	return m_rcItem;
-}
+	RECT BUIWidget::GetClientPos()
+	{
+		return m_rcItem;
+	}
 
-void BUIWidget::SetPos(RECT rc)
-{
-	m_rcItem = rc;
-}
+	void BUIWidget::SetPos(RECT rc)
+	{
+		m_rcItem = rc;
+	}
 
-int BUIWidget::GetWidth() const
-{
-	return  m_rcItem.right - m_rcItem.left;
-}
+	int BUIWidget::GetWidth()
+	{
+		return  m_rcItem.right - m_rcItem.left;
+	}
 
-int BUIWidget::GetHeight() const
-{
-	return m_rcItem.bottom - m_rcItem.top;
-}
+	int BUIWidget::GetHeight()
+	{
+		return m_rcItem.bottom - m_rcItem.top;
+	}
 
-int BUIWidget::GetX() const
-{
-	return m_xy.cx;
-}
+	int BUIWidget::GetX()
+	{
+		return m_xy.cx;
+	}
 
-int BUIWidget::GetY() const
-{
-	return m_xy.cy;
-}
+	int BUIWidget::GetY()
+	{
+		return m_xy.cy;
+	}
 
-// 提示信息
-LPCTSTR BUIWidget::GetToolTip() const
-{
-	return m_toolTip.c_str();
-}
+	// 提示信息
+	LPCTSTR BUIWidget::GetToolTip()
+	{
+		return m_toolTip.c_str();
+	}
 
-void BUIWidget::SetToolTip(LPCTSTR tip)
-{
-	m_toolTip = tip;
-}
+	void BUIWidget::SetToolTip(LPCTSTR tip)
+	{
+		m_toolTip = tip;
+	}
 
-// 绘制相关
-void BUIWidget::Paint(HDC hDC, const RECT& rcPaint)
-{
+	// 绘制相关
+	void BUIWidget::Paint(HDC hDC, const RECT& rcPaint)
+	{
+		DoPaint(hDC, rcPaint);
+	}
 
+	void BUIWidget::DoPaint(HDC hDC, const RECT& rcPaint)
+	{
+		if (!::IntersectRect(&m_rcPaint, &rcPaint, &m_rcItem))
+			return;
+
+		PaintBkColor(hDC);
+		PaintBkImage(hDC);
+		PaintStatusImage(hDC);
+		PaintText(hDC);
+		PaintBorder(hDC);
+	}
+
+	void BUIWidget::PaintBkColor(HDC hDC)
+	{
+		BRenderEngineManager::GetInstance()->RenderEngine()->DrawGradient(hDC, m_rcPaint, 0xFFFF0000, 0xFF0000FF);
+	}
+
+	void BUIWidget::PaintBkImage(HDC hDC)
+	{
+
+	}
+
+	void BUIWidget::PaintStatusImage(HDC hDC)
+	{
+
+	}
+
+	void BUIWidget::PaintText(HDC hDC)
+	{
+		BRenderEngineManager::GetInstance()->RenderEngine()->DrawText(hDC, m_rcPaint, GetText(), 0xFFFFFFFF, 12, NULL, 0);
+	}
+
+	void BUIWidget::PaintBorder(HDC hDC)
+	{
+
+	}
 }

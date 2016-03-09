@@ -81,7 +81,7 @@
   <ItemGroup>
     <ClInclude Include="BEncodingTranslation.h" />
     <ClInclude Include="BMsgDef.h" />
-    <ClInclude Include="BProcessResources.h" />
+    <ClInclude Include="BApplication.h" />
     <ClInclude Include="BRenderEngineDef.h" />
     <ClInclude Include="BRenderEngineGdiPlus.h" />
     <ClInclude Include="BRenderEngineManager.h" />
@@ -89,8 +89,10 @@
     <ClInclude Include="BSmartPointer.h" />
     <ClInclude Include="BUI.h" />
     <ClInclude Include="BUIDef.h" />
+    <ClInclude Include="BUILabel.h" />
     <ClInclude Include="BUIManager.h" />
     <ClInclude Include="BUIObject.h" />
+    <ClInclude Include="BUIPanel.h" />
     <ClInclude Include="BUIWidget.h" />
     <ClInclude Include="BUIWidgetDef.h" />
     <ClInclude Include="BUIWindow.h" />
@@ -99,12 +101,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BEncodingTranslation.cpp" />
-    <ClCompile Include="BProcessResources.cpp" />
+    <ClCompile Include="BApplication.cpp" />
     <ClCompile Include="BRenderEngineGdiPlus.cpp" />
     <ClCompile Include="BRenderEngineManager.cpp" />
     <ClCompile Include="BSingleton.cpp" />
     <ClCompile Include="BUI.cpp" />
+    <ClCompile Include="BUILabel.cpp" />
     <ClCompile Include="BUIManager.cpp" />
+    <ClCompile Include="BUIPanel.cpp" />
     <ClCompile Include="BUIWidget.cpp" />
     <ClCompile Include="BUIWindow.cpp" />
     <ClCompile Include="stdafx.cpp">

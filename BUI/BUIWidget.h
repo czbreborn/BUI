@@ -1,61 +1,74 @@
+#ifndef __BUIWIDGET_H__
+#define __BUIWIDGET_H__
+
 #pragma once
-#include "BUI.h"
 
-class BUI_API BUIWidget
-{
-public:
-	BUIWidget();
-	virtual ~BUIWidget();
+namespace BUI {
 
-public:
-	// 类型、识别相关
-	virtual bstring GetName() const;
-	virtual void SetName(LPCTSTR name);
+	class BUI_API BUIWidget
+	{
+	public:
+		BUIWidget();
+		virtual ~BUIWidget();
 
-	virtual LPCTSTR GetType() const;
-	virtual LPVOID GetInterface(LPCTSTR name);
+	public:
+		// 类型、识别相关
+		virtual bstring GetName();
+		virtual void SetName(LPCTSTR name);
 
-	// 文本相关
-	virtual bstring GetText() const;
-	virtual void SetText(LPCTSTR text);
+		virtual LPCTSTR GetType();
+		virtual LPVOID GetInterface(LPCTSTR name);
 
-	// 图形相关
-	DWORD GetBkColor() const;
-	void SetBkColor(DWORD bkColor);
-	DWORD GetBkColor2() const;
-	void SetBkColor2(DWORD bkColor);
-	LPCTSTR GetBkImage() const;
-	void SetBkImage(LPCTSTR pstrImage);
+		// 文本相关
+		virtual LPCTSTR GetText();
+		virtual void SetText(LPCTSTR text);
 
-	// 位置相关
-	virtual const RECT& GetPos() const;
-	virtual RECT GetClientPos() const;
+		// 图形相关
+		DWORD GetBkColor();
+		void SetBkColor(DWORD bkColor);
+		DWORD GetBkColor2();
+		void SetBkColor2(DWORD bkColor);
+		LPCTSTR GetBkImage();
+		void SetBkImage(LPCTSTR pstrImage);
 
-	virtual void SetPos(RECT rc);
-	virtual int GetWidth() const;
-	virtual int GetHeight() const;
-	virtual int GetX() const;
-	virtual int GetY() const;
+		// 位置相关
+		virtual const RECT& GetPos();
+		virtual RECT GetClientPos();
 
-	// 提示信息
-	virtual LPCTSTR GetToolTip() const;
-	virtual void SetToolTip(LPCTSTR tip);
+		virtual void SetPos(RECT rc);
+		virtual int GetWidth();
+		virtual int GetHeight();
+		virtual int GetX();
+		virtual int GetY();
 
-	// 绘制相关
-	virtual void Paint(HDC hDC, const RECT& rcPaint);
+		// 提示信息
+		virtual LPCTSTR GetToolTip();
+		virtual void SetToolTip(LPCTSTR tip);
 
-private:
-	bstring m_widgetName;
+		// 绘制相关
+		virtual void Paint(HDC hDC, const RECT& rcPaint);
+		virtual void DoPaint(HDC hDC, const RECT& rcPaint);
+		virtual void PaintBkColor(HDC hDC);
+		virtual void PaintBkImage(HDC hDC);
+		virtual void PaintStatusImage(HDC hDC);
+		virtual void PaintText(HDC hDC);
+		virtual void PaintBorder(HDC hDC);
 
-	bstring m_strText;
+	private:
+		bstring m_widgetName;
 
-	DWORD m_bkColor;
-	DWORD m_bkColor2;
-	bstring m_imageFileName;
+		bstring m_strText;
 
-	RECT m_rcItem;
-	SIZE m_xy;
+		DWORD m_bkColor;
+		DWORD m_bkColor2;
+		bstring m_imageFileName;
 
-	bstring m_toolTip;
-};
+		RECT m_rcItem;
+		SIZE m_xy;
 
+		bstring m_toolTip;
+
+		RECT m_rcPaint;
+	};
+}
+#endif

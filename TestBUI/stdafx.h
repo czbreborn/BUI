@@ -16,6 +16,7 @@
 #include <tchar.h>
 
 #include "..\BUI\BUI.h"
+using namespace BUI;
 #pragma comment(lib, "..\\Debug\\BUI.lib")
 
 // TODO:  在此处引用程序需要的其他头文件

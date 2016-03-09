@@ -6,13 +6,20 @@ class TestWindow : public BUIWindow
 public:
 	TestWindow() {}
 	LPCTSTR GetWindowClassName() const { return _T("TestWindow"); }
+	virtual LRESULT MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		LRESULT ret = MessageDelegate(uMsg, wParam, lParam);
+		if (ret != -1)
+			return ret;
+
+		return m_pUIManager->MessageRouting(uMsg, wParam, lParam);
+	}
 };
 
 int APIENTRY WinMain(HINSTANCE hinst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
-	BProcessResources::GetInstance()->SetProcessInstance(hinst);
-	BProcessResources::GetInstance()->SetResourcesPath(L"123");
-	BShareRefPtr<TestWindow> test;
+	BApplication::GetInstance()->SetProcessInstance(hinst);
+	BApplication::GetInstance()->SetResourcesPath(L"123");
 	RECT rc;
 	rc.left = 500;
 	rc.right = 800;
@@ -23,12 +30,7 @@ int APIENTRY WinMain(HINSTANCE hinst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int 
 	win->CenterWindow();
 	win->ShowWindow(SW_SHOW);
 
-	MSG msg = { 0 };
-	while (::GetMessage(&msg, NULL, 0, 0)) 
-	{
-		::TranslateMessage(&msg);
-		::DispatchMessage(&msg);
-	}
+	BApplication::GetInstance()->LoopMessage();
 
 	return 0;
 }

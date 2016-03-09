@@ -51,9 +51,6 @@
     <ClInclude Include="BUI.h">
       <Filter>Head Files</Filter>
     </ClInclude>
-    <ClInclude Include="BProcessResources.h">
-      <Filter>Head Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="BUIWindow.h">
       <Filter>Head Files\Core</Filter>
     </ClInclude>
@@ -75,9 +72,6 @@
     <ClInclude Include="BUIObject.h">
       <Filter>Head Files\Core</Filter>
     </ClInclude>
-    <ClInclude Include="BUIWidget.h">
-      <Filter>Head Files\Widget</Filter>
-    </ClInclude>
     <ClInclude Include="BUIWidgetDef.h">
       <Filter>Head Files\Widget</Filter>
     </ClInclude>
@@ -93,6 +87,18 @@
     <ClInclude Include="BUIManager.h">
       <Filter>Head Files\Core</Filter>
     </ClInclude>
+    <ClInclude Include="BApplication.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="BUILabel.h">
+      <Filter>Head Files\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="BUIWidget.h">
+      <Filter>Head Files\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="BUIPanel.h">
+      <Filter>Head Files\Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -100,9 +106,6 @@
     </ClCompile>
     <ClCompile Include="BUI.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BProcessResources.cpp">
-      <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="BUIWindow.cpp">
       <Filter>Source Files\Core</Filter>
@@ -116,14 +119,23 @@
     <ClCompile Include="BRenderEngineGdiPlus.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="BUIWidget.cpp">
-      <Filter>Source Files\Widget</Filter>
-    </ClCompile>
     <ClCompile Include="BSingleton.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="BUIManager.cpp">
       <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="BApplication.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="BUILabel.cpp">
+      <Filter>Source Files\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="BUIWidget.cpp">
+      <Filter>Source Files\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="BUIPanel.cpp">
+      <Filter>Source Files\Widget</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

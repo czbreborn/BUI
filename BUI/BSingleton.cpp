@@ -1,20 +1,21 @@
 #include "stdafx.h"
-#include "BSingleton.h"
 
-template<typename T>
-BShareRefPtr<T> BSingleton<T>::m_instance;
+namespace BUI{
+	template<typename T>
+	BShareRefPtr<T> BSingleton<T>::m_instance;
 
-template<typename T>
-BShareRefPtr<T> BSingleton<T>::Instance()
-{
-	if (m_instance == NULL)
+	template<typename T>
+	BShareRefPtr<T> BSingleton<T>::Instance()
 	{
-		BShareRefPtr<T> temp(new BSingleton<T>);
 		if (m_instance == NULL)
 		{
-			m_instance = temp;
+			BShareRefPtr<T> temp(new BSingleton<T>);
+			if (m_instance == NULL)
+			{
+				m_instance = temp;
+			}
 		}
-	}
 
-	return m_instance;
+		return m_instance;
+	}
 }

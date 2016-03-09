@@ -1,19 +1,28 @@
+#ifndef __BRENDERENGINEMANAGER_H__
+#define __BRENDERENGINEMANAGER_H__
+
 #pragma once
 
-#include "BUI.h"
-#include "BRenderEngineDef.h"
+namespace BUI{
+	class BRenderEngineManager
+	{
+	protected:
+		BRenderEngineManager();
+		~BRenderEngineManager();
 
-class BRenderEngineManager
-{
-public:
-	BRenderEngineManager();
-	~BRenderEngineManager();
+	public:
+		static BRenderEngineManager* GetInstance();
 
-	void SetRenderEngineMode(RENDERENGINEMODE mode, LPCTSTR moduleName = NULL);
-	BIRenderEngine* RenderEngine();
+	public:
+		void SetRenderEngineMode(RENDERENGINEMODE mode, LPCTSTR moduleName = NULL);
+		BIRenderEngine* RenderEngine();
 
-private:
-	RENDERENGINEMODE m_renderEngineMode;
-	BIRenderEngine* m_renderEngineInterface;
-};
+	private:
+		RENDERENGINEMODE m_renderEngineMode;
+		BIRenderEngine* m_renderEngineInterface;
 
+		static BRenderEngineManager m_renderEngineManager;
+	};
+}
+
+#endif
