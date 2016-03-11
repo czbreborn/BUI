@@ -41,6 +41,7 @@ using namespace std;
 #include "BRenderEngineDef.h"
 #include "BRenderEngineGdiPlus.h"
 #include "BRenderEngineManager.h"
+#include "BUIWidgetBuilder.h"
 
 #include "BUIObject.h"
 #include "BUIWindow.h"
@@ -48,5 +49,6 @@ using namespace std;
 #include "BUIWidget.h"
 #include "BUILabel.h"
 #include "BUIPanel.h"
+#include "BUIMarkup.h"
 
 #endif

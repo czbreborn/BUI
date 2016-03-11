@@ -99,6 +99,12 @@
     <ClInclude Include="BUIPanel.h">
       <Filter>Head Files\Widget</Filter>
     </ClInclude>
+    <ClInclude Include="BUIWidgetBuilder.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="BUIMarkup.h">
+      <Filter>Head Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -136,6 +142,12 @@
     </ClCompile>
     <ClCompile Include="BUIPanel.cpp">
       <Filter>Source Files\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="BUIWidgetBuilder.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="BUIMarkup.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -93,7 +93,7 @@ namespace BUI{
 		SetWindowLong(m_hwnd, GWL_EXSTYLE, exStyle);  //È¥±ß¿ò
 
 		m_pUIManager = new BUIManager;
-		m_pUIManager->Init(m_hwnd, _T("BUIWindow"));
+		m_pUIManager->Init(m_hwnd, GetWindowClassName());
 		BUIWidget* label = new BUIWidget;
 		label->SetText(_T("test label"));
 		m_pUIManager->AttachWidget(label);
