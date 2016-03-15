@@ -157,7 +157,7 @@ bool CMarkupNode::GetAttributeValue(int iIndex, LPTSTR pstrValue, SIZE_T cchMax)
     if( m_pOwner == NULL ) return false;
     if( m_nAttributes == 0 ) _MapAttributes();
     if( iIndex < 0 || iIndex >= m_nAttributes ) return false;
-    _tcsncpy(pstrValue, m_pOwner->m_pstrXML + m_aAttributes[iIndex].iValue, cchMax);
+	_tcsncpy_s(pstrValue, cchMax, m_pOwner->m_pstrXML + m_aAttributes[iIndex].iValue, cchMax);
     return true;
 }
 
@@ -167,7 +167,7 @@ bool CMarkupNode::GetAttributeValue(LPCTSTR pstrName, LPTSTR pstrValue, SIZE_T c
     if( m_nAttributes == 0 ) _MapAttributes();
     for( int i = 0; i < m_nAttributes; i++ ) {
         if( _tcscmp(m_pOwner->m_pstrXML + m_aAttributes[i].iName, pstrName) == 0 ) {
-            _tcsncpy(pstrValue, m_pOwner->m_pstrXML + m_aAttributes[i].iValue, cchMax);
+			_tcsncpy_s(pstrValue, cchMax, m_pOwner->m_pstrXML + m_aAttributes[i].iValue, cchMax);
             return true;
         }
     }
@@ -377,10 +377,11 @@ bool CMarkup::LoadFromMem(BYTE* pByte, DWORD dwSize, int encoding)
 bool CMarkup::LoadFromFile(LPCTSTR pstrFilename, int encoding)
 {
     Release();
-    CDuiString sFile = CPaintManagerUI::GetResourcePath();
-    if( CPaintManagerUI::GetResourceZip().IsEmpty() ) {
+	bstring sFile = BApplication::GetInstance()->GetResourcesPath();
+	bstring zipName = BApplication::GetInstance()->GetResourceZip();
+	if (zipName.empty()) {
         sFile += pstrFilename;
-        HANDLE hFile = ::CreateFile(sFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        HANDLE hFile = ::CreateFile(sFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
         if( hFile == INVALID_HANDLE_VALUE ) return _Failed(_T("Error opening file"));
         DWORD dwSize = ::GetFileSize(hFile, NULL);
         if( dwSize == 0 ) return _Failed(_T("File is empty"));
@@ -402,10 +403,8 @@ bool CMarkup::LoadFromFile(LPCTSTR pstrFilename, int encoding)
         return ret;
     }
     else {
-        sFile += CPaintManagerUI::GetResourceZip();
-        HZIP hz = NULL;
-        if( CPaintManagerUI::IsCachedResourceZip() ) hz = (HZIP)CPaintManagerUI::GetResourceZipHandle();
-        else hz = OpenZip((void*)sFile.GetData(), 0, 2);
+		sFile += zipName;
+        HZIP hz = OpenZip((void*)sFile.c_str(), 0, 2);
         if( hz == NULL ) return _Failed(_T("Error opening zip file"));
         ZIPENTRY ze; 
         int i; 
@@ -417,10 +416,10 @@ bool CMarkup::LoadFromFile(LPCTSTR pstrFilename, int encoding)
         int res = UnzipItem(hz, i, pByte, dwSize, 3);
         if( res != 0x00000000 && res != 0x00000600) {
             delete[] pByte;
-            if( !CPaintManagerUI::IsCachedResourceZip() ) CloseZip(hz);
+			CloseZip(hz);
             return _Failed(_T("Could not unzip file"));
         }
-        if( !CPaintManagerUI::IsCachedResourceZip() ) CloseZip(hz);
+        CloseZip(hz);
         bool ret = LoadFromMem(pByte, dwSize, encoding);
         delete[] pByte;
 
@@ -439,12 +438,12 @@ void CMarkup::Release()
 
 void CMarkup::GetLastErrorMessage(LPTSTR pstrMessage, SIZE_T cchMax) const
 {
-    _tcsncpy(pstrMessage, m_szErrorMsg, cchMax);
+	_tcsncpy_s(pstrMessage, cchMax, m_szErrorMsg, cchMax);
 }
 
 void CMarkup::GetLastErrorLocation(LPTSTR pstrSource, SIZE_T cchMax) const
 {
-    _tcsncpy(pstrSource, m_szErrorXML, cchMax);
+	_tcsncpy_s(pstrSource, cchMax, m_szErrorXML, cchMax);
 }
 
 CMarkupNode CMarkup::GetRoot()
@@ -657,8 +656,10 @@ bool CMarkup::_Failed(LPCTSTR pstrError, LPCTSTR pstrLocation)
     // Register last error
     TRACE(_T("XML Error: %s"), pstrError);
     if( pstrLocation != NULL ) TRACE(pstrLocation);
-    _tcsncpy(m_szErrorMsg, pstrError, (sizeof(m_szErrorMsg) / sizeof(m_szErrorMsg[0])) - 1);
-    _tcsncpy(m_szErrorXML, pstrLocation != NULL ? pstrLocation : _T(""), lengthof(m_szErrorXML) - 1);
+	int errMsgLen = lengthof(m_szErrorMsg);
+	_tcsncpy_s(m_szErrorMsg, errMsgLen, pstrError, errMsgLen - 1);
+	int errXMLLen = lengthof(m_szErrorXML);
+	_tcsncpy_s(m_szErrorXML, errXMLLen, pstrLocation != NULL ? pstrLocation : _T(""), errXMLLen - 1);
     return false; // Always return 'false'
 }
 

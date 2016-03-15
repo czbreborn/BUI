@@ -18,6 +18,8 @@ namespace BUI{
 		HINSTANCE GetProcessInstance() const;
 		void SetResourcesPath(LPCTSTR resPath);
 		LPCTSTR GetResourcesPath() const;
+		void SetResourceZip(LPCTSTR zipName);
+		LPCTSTR GetResourceZip() const;
 
 		void LoopMessage();
 
@@ -28,6 +30,7 @@ namespace BUI{
 
 		HINSTANCE m_processInstance;
 		bstring m_resorcesPath;
+		bstring m_zipName;
 	};
 }
 #endif // __BAPPLICATION_H__

@@ -12,5 +12,5 @@
 #include <windows.h>
 #include "BUI.h"
 
-
+#define lengthof(x) (sizeof(x)/sizeof(*x))
 // TODO:  在此处引用程序需要的其他头文件

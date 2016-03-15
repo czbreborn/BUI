@@ -31,11 +31,11 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{8e7ce72e-0d54-43ad-ad8d-010bba31e3ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Widget">
-      <UniqueIdentifier>{34e1ad3c-7962-4ad9-8057-138b5042fec3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Head Files\Widget">
       <UniqueIdentifier>{a053ea06-458e-4960-9fcb-3defb25ed9b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Render\Widget">
+      <UniqueIdentifier>{34e1ad3c-7962-4ad9-8057-138b5042fec3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -135,18 +135,21 @@
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="BUILabel.cpp">
-      <Filter>Source Files\Widget</Filter>
+      <Filter>Source Files\Render\Widget</Filter>
     </ClCompile>
     <ClCompile Include="BUIWidget.cpp">
-      <Filter>Source Files\Widget</Filter>
+      <Filter>Source Files\Render\Widget</Filter>
     </ClCompile>
     <ClCompile Include="BUIPanel.cpp">
-      <Filter>Source Files\Widget</Filter>
+      <Filter>Source Files\Render\Widget</Filter>
     </ClCompile>
     <ClCompile Include="BUIWidgetBuilder.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="BUIMarkup.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="XUnzip.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
   </ItemGroup>

@@ -4,7 +4,8 @@ namespace BUI{
 	BApplication BApplication::m_processResources;
 	BApplication::BApplication()
 		: m_processInstance(NULL),
-		m_resorcesPath(L"")
+		m_resorcesPath(_T("")),
+		m_zipName(_T(""))
 	{
 	}
 
@@ -35,6 +36,16 @@ namespace BUI{
 	LPCTSTR BApplication::GetResourcesPath() const
 	{
 		return m_resorcesPath.c_str();
+	}
+
+	void BApplication::SetResourceZip(LPCTSTR zipName)
+	{
+		m_zipName = zipName;
+	}
+
+	LPCTSTR BApplication::GetResourceZip() const
+	{
+		return m_zipName.c_str();
 	}
 
 	void BApplication::LoopMessage()

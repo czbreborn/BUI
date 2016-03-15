@@ -27,7 +27,6 @@ namespace BUI{
 	void BRenderEngineGdiPlus::Init()
 	{
 		GdiplusStartupInput input;
-		ULONG_PTR uGdiPlus;
 		GdiplusStartup(&m_uGdiPlus, &input, NULL);
 	}
 

@@ -4,6 +4,7 @@
 #pragma once
 
 namespace BUI{
+
 	// forbidden copy
 	class BUI_API BNoCopy
 	{
