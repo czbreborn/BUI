@@ -17,13 +17,14 @@ namespace BUI{
 	{
 	}
 
-	BUIWidget* BUIWidgetBuilder::CreateWidget(LPCTSTR xmlName, LPCTSTR type/* = NULL*/, BIWidgetBuilderCallBack* callback/* = NULL*/)
+	BUIWidget* BUIWidgetBuilder::CreateWidget(LPCTSTR xmlName, BUIManager* pWindowManager, BUIWidget* parent/* = NULL*/, LPCTSTR type/* = NULL*/, BIWidgetBuilderCallBack* callback/* = NULL*/)
 	{
 		if (!m_xml.LoadFromFile(xmlName))
 			return NULL;
 
 		m_builderCallBack = callback;
-		create(NULL);
+		m_pWindowManager = pWindowManager;
+		return create(parent);
 	}
 
 	BUIWidget* BUIWidgetBuilder::create(BUIWidget* parent)
@@ -56,7 +57,24 @@ namespace BUI{
 
 	BUIWidget* BUIWidgetBuilder::parse(CMarkupNode* pRoot, BUIWidget* parent)
 	{
-		return NULL;
+		BUIWidget* pWidget = NULL;
+		for (CMarkupNode node = pRoot->GetChild(); node.IsValid(); node = node.GetSibling()) {
+			LPCTSTR nodeName = node.GetName();
+			bstring className = _T("BUI");
+			className.append(nodeName);
+			BUIWidget* newWidget = BUIWidgetFactory::GetInstance()->CreateWidget(className.c_str());
+			if (node.HasChildren()) {
+				parse(&node, newWidget);
+			}
+
+			if (node.HasAttributes()) {
+				int nAttributes = node.GetAttributeCount();
+				for (int i = 0; i < nAttributes; i++) {
+					newWidget->SetAttribute(node.GetAttributeName(i), node.GetAttributeValue(i));
+				}
+			}
+		}
+		return pWidget;
 	}
 
 	void BUIWidgetBuilder::parseImageAttributes(CMarkupNode* node)

@@ -4,7 +4,6 @@
 #pragma once
 
 namespace BUI {
-
 	class BUI_API BUIWidget
 	{
 	public:
@@ -53,6 +52,9 @@ namespace BUI {
 		virtual void PaintStatusImage(HDC hDC);
 		virtual void PaintText(HDC hDC);
 		virtual void PaintBorder(HDC hDC);
+
+		// 控件属性相关
+		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
 
 	private:
 		bstring m_widgetName;

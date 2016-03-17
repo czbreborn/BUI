@@ -7,6 +7,8 @@ namespace BUI{
 	class BUI_API BUILabel : public BUIWidget
 	{
 	public:
+		DEFINE_CREATEWIDGET(BUILabel)
+		
 		BUILabel();
 		~BUILabel();
 

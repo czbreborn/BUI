@@ -1,8 +1,11 @@
 #include "stdafx.h"
 
 namespace BUI{
+	IMPLEMENT_CREATEWIDGET(BUILabel)
+
 	BUILabel::BUILabel()
 	{
+
 	}
 
 

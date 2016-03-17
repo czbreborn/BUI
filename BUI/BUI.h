@@ -36,19 +36,22 @@ using namespace std;
 
 #include "BUIDef.h"
 #include "BMsgDef.h"
+#include "BUIWidgetDef.h"
+
 #include "BApplication.h"
 #include "BUIManager.h"
 #include "BRenderEngineDef.h"
 #include "BRenderEngineGdiPlus.h"
 #include "BRenderEngineManager.h"
+#include "BUIMarkup.h"
 #include "BUIWidgetBuilder.h"
+#include "BUIWidgetFactory.h"
 
 #include "BUIObject.h"
 #include "BUIWindow.h"
-#include "BUIWidgetDef.h"
 #include "BUIWidget.h"
 #include "BUILabel.h"
 #include "BUIPanel.h"
-#include "BUIMarkup.h"
+
 
 #endif

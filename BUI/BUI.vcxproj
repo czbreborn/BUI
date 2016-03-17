@@ -96,6 +96,7 @@
     <ClInclude Include="BUIWidget.h" />
     <ClInclude Include="BUIWidgetBuilder.h" />
     <ClInclude Include="BUIWidgetDef.h" />
+    <ClInclude Include="BUIWidgetFactory.h" />
     <ClInclude Include="BUIWindow.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -113,6 +114,7 @@
     <ClCompile Include="BUIPanel.cpp" />
     <ClCompile Include="BUIWidget.cpp" />
     <ClCompile Include="BUIWidgetBuilder.cpp" />
+    <ClCompile Include="BUIWidgetFactory.cpp" />
     <ClCompile Include="BUIWindow.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

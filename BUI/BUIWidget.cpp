@@ -167,4 +167,9 @@ namespace BUI{
 	{
 
 	}
+
+	void BUIWidget::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
+	{
+		
+	}
 }

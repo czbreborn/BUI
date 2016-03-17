@@ -10,18 +10,21 @@ namespace BUI{
 		virtual BUIWidget* CreateWidget(LPCTSTR className) = 0;
 	};
 
+	class CMarkup;
+	class CMarkupNode;
 	class BUIWidgetBuilder;
 	typedef void(BUIWidgetBuilder::*PARSE)(CMarkupNode* node);
 	typedef map<LPCTSTR, PARSE> RESOURCEPARSEMAP;
 	typedef RESOURCEPARSEMAP::iterator RESPARSEMAPIT;
 	
+	class BUIManager;
 	class BUIWidgetBuilder
 	{
 	public:
 		BUIWidgetBuilder();
 		~BUIWidgetBuilder();
 
-		BUIWidget* CreateWidget(LPCTSTR xmlName, LPCTSTR type = NULL, BIWidgetBuilderCallBack* callback = NULL);
+		BUIWidget* CreateWidget(LPCTSTR xmlName, BUIManager* pWindowManager, BUIWidget* parent = NULL, LPCTSTR type = NULL, BIWidgetBuilderCallBack* callback = NULL);
 
 	private:
 		BUIWidget* create(BUIWidget* parent);
@@ -33,6 +36,7 @@ namespace BUI{
 
 	private:
 		BIWidgetBuilderCallBack* m_builderCallBack;
+		BUIManager* m_pWindowManager;
 		CMarkup m_xml;
 		static RESOURCEPARSEMAP s_resoureParseMap;
 	};
