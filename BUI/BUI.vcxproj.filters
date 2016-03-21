@@ -108,6 +108,9 @@
     <ClInclude Include="BUIWidgetFactory.h">
       <Filter>Head Files\Widget</Filter>
     </ClInclude>
+    <ClInclude Include="BUIButton.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -157,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="BUIWidgetFactory.cpp">
       <Filter>Source Files\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="BUIButton.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

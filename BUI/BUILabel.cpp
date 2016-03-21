@@ -15,11 +15,12 @@ namespace BUI{
 
 	LPCTSTR BUILabel::GetType() const
 	{
-		return BUI_WIN_LABEL;
+		return BUI_WIN_BUTTON;
 	}
 
 	LPVOID BUILabel::GetInterface(LPCTSTR name)
 	{
-		return this;
+		if (_tcscmp(name, _T("Label")) == 0) return static_cast<BUILabel*>(this);
+		return BUIWidget::GetInterface(name);
 	}
 }

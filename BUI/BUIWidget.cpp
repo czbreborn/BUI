@@ -35,7 +35,8 @@ namespace BUI{
 
 	LPVOID BUIWidget::GetInterface(LPCTSTR name)
 	{
-		return this;
+		if (_tcscmp(name, _T("Widget")) == 0) return this;
+		return NULL;
 	}
 
 	LPCTSTR BUIWidget::GetText()

@@ -34,23 +34,11 @@ namespace BUI{
 		// 解析图片，字体等相关资源属性
 		for (CMarkupNode node = root.GetChild(); node.IsValid(); node = node.GetSibling())
 		{
-			lpstrName = node.GetName();
-			RESPARSEMAPIT it = s_resoureParseMap.find(lpstrName);
-			if (it != s_resoureParseMap.end())
-			{
-				PARSE parseFunc = static_cast<PARSE>(it->second);
-				(this->*parseFunc)(&node);
-			}
+			itemParse(&node);
 		}
 
-		// 解析window属性
-		lpstrName = root.GetName();
-		RESPARSEMAPIT it = s_resoureParseMap.find(lpstrName);
-		if (it != s_resoureParseMap.end())
-		{
-			PARSE parseFunc = static_cast<PARSE>(it->second);
-			(this->*parseFunc)(&root);
-		}
+		// 解析window相关属性
+		itemParse(&root);
 
 		return parse(&root, parent);
 	}
@@ -63,18 +51,33 @@ namespace BUI{
 			bstring className = _T("BUI");
 			className.append(nodeName);
 			BUIWidget* newWidget = BUIWidgetFactory::GetInstance()->CreateWidget(className.c_str());
-			if (node.HasChildren()) {
-				parse(&node, newWidget);
-			}
-
+			
 			if (node.HasAttributes()) {
 				int nAttributes = node.GetAttributeCount();
 				for (int i = 0; i < nAttributes; i++) {
 					newWidget->SetAttribute(node.GetAttributeName(i), node.GetAttributeValue(i));
 				}
 			}
+
+			if (node.HasChildren()) {
+				parse(&node, newWidget);
+			}
+
+			if (pWidget == NULL) 
+				pWidget = newWidget;
 		}
 		return pWidget;
+	}
+
+	void BUIWidgetBuilder::itemParse(CMarkupNode* node)
+	{
+		LPCTSTR lpstrName = node->GetName();
+		RESPARSEMAPIT it = s_resoureParseMap.find(lpstrName);
+		if (it != s_resoureParseMap.end())
+		{
+			PARSE parseFunc = static_cast<PARSE>(it->second);
+			(this->*parseFunc)(node);
+		}
 	}
 
 	void BUIWidgetBuilder::parseImageAttributes(CMarkupNode* node)

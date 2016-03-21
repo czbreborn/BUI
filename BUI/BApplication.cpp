@@ -53,8 +53,34 @@ namespace BUI{
 		MSG msg = { 0 };
 		while (::GetMessage(&msg, NULL, 0, 0))
 		{
-			::TranslateMessage(&msg);
-			::DispatchMessage(&msg);
+			if (!TranslateMessage(&msg))
+			{
+				::TranslateMessage(&msg);
+				::DispatchMessage(&msg);
+			}
 		}
+	}
+
+	BOOL BApplication::TranslateMessage(LPMSG pMsg)
+	{
+		HWND hwnd = pMsg->hwnd;
+		return 0;
+	}
+
+	void BApplication::AddUIManager(HWND hwnd, BUIManager* uimanager)
+	{
+		m_uiManagerMap.insert(make_pair(hwnd, uimanager));
+	}
+
+	BUIManager* BApplication::GetUIManager(HWND hwnd)
+	{
+		BUIManager* pUIManager = NULL;
+		UIMANAGERMAPIT it = m_uiManagerMap.find(hwnd);
+		if (it != m_uiManagerMap.end())
+		{
+			pUIManager = it->second;
+		}
+
+		return pUIManager;
 	}
 }

@@ -4,6 +4,7 @@
 #pragma once
 
 namespace BUI{
+	class BUIManager;
 	class BUI_API BApplication
 	{
 	protected:
@@ -22,8 +23,14 @@ namespace BUI{
 		LPCTSTR GetResourceZip() const;
 
 		void LoopMessage();
+		BOOL TranslateMessage(LPMSG pMsg);
 
 		LRESULT MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+	public:
+		// 添加窗口UI管理实例
+		void AddUIManager(HWND hwnd, BUIManager* uimanager);
+		BUIManager* GetUIManager(HWND hwnd);
 
 	private:
 		static BApplication m_processResources;
@@ -31,6 +38,10 @@ namespace BUI{
 		HINSTANCE m_processInstance;
 		bstring m_resorcesPath;
 		bstring m_zipName;
+
+		typedef map<HWND, BUIManager*> UIMANAGERMAP;
+		typedef UIMANAGERMAP::iterator UIMANAGERMAPIT;
+		UIMANAGERMAP m_uiManagerMap;
 	};
 }
 #endif // __BAPPLICATION_H__

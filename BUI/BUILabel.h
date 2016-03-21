@@ -10,7 +10,7 @@ namespace BUI{
 		DEFINE_CREATEWIDGET(BUILabel)
 		
 		BUILabel();
-		~BUILabel();
+		virtual ~BUILabel();
 
 		LPCTSTR GetType() const;
 		LPVOID GetInterface(LPCTSTR name);

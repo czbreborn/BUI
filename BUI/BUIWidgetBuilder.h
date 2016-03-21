@@ -30,6 +30,7 @@ namespace BUI{
 		BUIWidget* create(BUIWidget* parent);
 		BUIWidget* parse(CMarkupNode* pRoot, BUIWidget* parent);
 
+		void itemParse(CMarkupNode* node);
 		void parseImageAttributes(CMarkupNode* node);
 		void parseFontAttributes(CMarkupNode* node);
 		void parseWindowAttributes(CMarkupNode* node);

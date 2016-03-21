@@ -80,7 +80,7 @@ namespace BUI{
 		return true;
 	}
 
-	void BUIManager::OnPaint()
+	void BUIManager::OnPaint()	
 	{
 		PAINTSTRUCT ps = { 0 };
 		BeginPaint(m_hWndPaint, &ps);

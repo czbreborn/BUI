@@ -51,6 +51,7 @@ using namespace std;
 #include "BUIWindow.h"
 #include "BUIWidget.h"
 #include "BUILabel.h"
+#include "BUIButton.h"
 #include "BUIPanel.h"
 
 
