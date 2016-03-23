@@ -65,8 +65,13 @@ namespace BUI{
 		m_disabledImage = imageName;
 	}
 
-	void BUIButton::PaintStatusImage(HDC hDC)
+	void BUIButton::Event(TEventUI& event)
 	{
 
+	}
+
+	void BUIButton::PaintStatusImage(HDC hDC)
+	{
+		
 	}
 }

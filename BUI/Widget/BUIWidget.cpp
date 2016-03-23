@@ -2,12 +2,16 @@
 
 namespace BUI{
 	BUIWidget::BUIWidget()
-		: m_widgetName(_T("")),
+		: m_pUIManager(NULL),
+		m_parent(NULL),
+		m_widgetName(_T("")),
 		m_strText(_T("")),
+		m_toolTip(_T("")),
 		m_bkColor(0),
 		m_bkColor2(0),
 		m_imageFileName(_T("")),
-		m_toolTip(_T(""))
+		m_focused(false)
+		
 	{
 		m_rcItem.left = m_rcItem.right = m_rcItem.top = m_rcItem.bottom = 0;
 		m_xy.cx = m_xy.cy = 0;
@@ -169,8 +173,53 @@ namespace BUI{
 
 	}
 
+	void BUIWidget::Invalidate()
+	{
+		m_pUIManager->Invalidate(m_rcItem);
+	}
+
 	void BUIWidget::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
 		
+	}
+
+	void BUIWidget::Event(TEventUI& event)
+	{
+		if (event.type == uievent_setcursor)
+		{
+			::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_ARROW)));
+			return ;
+		}
+
+		if (event.type == uievent_setfocus)
+		{
+			Invalidate();
+			m_focused = true;
+			return;
+		}
+
+		if (event.type == uievent_killfocus)
+		{
+			Invalidate();
+			m_focused = false;
+			return;
+		}
+	}
+
+	BUIManager* BUIWidget::GetManager() const
+	{
+		return m_pUIManager;
+	}
+
+	void BUIWidget::SetManager(BUIManager* uiManager, BUIWidget* parent)
+	{
+		m_pUIManager = uiManager;
+		m_parent = parent;
+
+	}
+
+	BUIWidget* BUIWidget::GetParent() const
+	{
+		return m_parent;
 	}
 }

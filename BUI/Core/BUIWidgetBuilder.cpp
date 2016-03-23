@@ -4,9 +4,8 @@ namespace BUI{
 	RESOURCEPARSEMAP BUIWidgetBuilder::s_resoureParseMap;
 	BUIWidgetBuilder::BUIWidgetBuilder()
 	{
-#define PARSEFUNCTION(func) (&func)
 #define PARSEBIND(restype, func) \
-	s_resoureParseMap.insert(make_pair(restype, PARSEFUNCTION(func)))
+	s_resoureParseMap.insert(make_pair(restype, SELECTOR(func)))
 		PARSEBIND(_T("Image"), BUIWidgetBuilder::parseImageAttributes);
 		PARSEBIND(_T("Font"), BUIWidgetBuilder::parseFontAttributes);
 		PARSEBIND(_T("Window"), BUIWidgetBuilder::parseWindowAttributes);
@@ -30,7 +29,6 @@ namespace BUI{
 	BUIWidget* BUIWidgetBuilder::create(BUIWidget* parent)
 	{
 		CMarkupNode& root = m_xml.GetRoot();
-		LPCTSTR lpstrName;
 		// 解析图片，字体等相关资源属性
 		for (CMarkupNode node = root.GetChild(); node.IsValid(); node = node.GetSibling())
 		{

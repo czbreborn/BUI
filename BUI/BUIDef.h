@@ -5,6 +5,8 @@
 
 namespace BUI{
 
+	#define SELECTOR(func) (&func)
+
 	// forbidden copy
 	class BUI_API BNoCopy
 	{

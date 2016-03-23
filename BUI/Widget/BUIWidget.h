@@ -21,6 +21,9 @@ namespace BUI {
 		// 文本相关
 		virtual LPCTSTR GetText();
 		virtual void SetText(LPCTSTR text);
+		// 提示信息
+		virtual LPCTSTR GetToolTip();
+		virtual void SetToolTip(LPCTSTR tip);
 
 		// 图形相关
 		DWORD GetBkColor();
@@ -33,16 +36,11 @@ namespace BUI {
 		// 位置相关
 		virtual const RECT& GetPos();
 		virtual RECT GetClientPos();
-
 		virtual void SetPos(RECT rc);
 		virtual int GetWidth();
 		virtual int GetHeight();
 		virtual int GetX();
 		virtual int GetY();
-
-		// 提示信息
-		virtual LPCTSTR GetToolTip();
-		virtual void SetToolTip(LPCTSTR tip);
 
 		// 绘制相关
 		virtual void Paint(HDC hDC, const RECT& rcPaint);
@@ -53,13 +51,25 @@ namespace BUI {
 		virtual void PaintText(HDC hDC);
 		virtual void PaintBorder(HDC hDC);
 
+		void Invalidate();
+
 		// 控件属性相关
 		virtual void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+		
+		// 控件事件处理
+		virtual void Event(TEventUI& event);
+
+		virtual BUIManager* GetManager() const;
+		virtual void SetManager(BUIManager* uiManager, BUIWidget* parent);
+		virtual BUIWidget* GetParent() const;
 
 	private:
+		BUIManager*	m_pUIManager;
+		BUIWidget*	m_parent;
 		bstring m_widgetName;
 
 		bstring m_strText;
+		bstring m_toolTip;
 
 		DWORD m_bkColor;
 		DWORD m_bkColor2;
@@ -67,10 +77,8 @@ namespace BUI {
 
 		RECT m_rcItem;
 		SIZE m_xy;
-
-		bstring m_toolTip;
-
 		RECT m_rcPaint;
+		bool m_focused;
 	};
 }
 #endif

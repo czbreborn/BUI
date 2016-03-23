@@ -23,4 +23,9 @@ namespace BUI{
 		if (_tcscmp(name, _T("Label")) == 0) return static_cast<BUILabel*>(this);
 		return BUIWidget::GetInterface(name);
 	}
+
+	void BUILabel::Event(TEventUI& event)
+	{
+		
+	}
 }

@@ -14,6 +14,8 @@ namespace BUI{
 
 		LPCTSTR GetType() const;
 		LPVOID GetInterface(LPCTSTR name);
+
+		void Event(TEventUI& event);
 	};
 } // namespace BUI
 

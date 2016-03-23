@@ -6,7 +6,7 @@
 namespace BUI{
 
 #define MSG2STR(msg) _T(#msg)
-#define MSGFUNCTION(function) (&function)
+#define MSGFUNCTION SELECTOR
 
 	// 预处理消息
 	class BIPreTranslateMessage{

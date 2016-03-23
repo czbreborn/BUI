@@ -13,6 +13,9 @@
 #define BUI_API __declspec(dllimport)
 #endif
 
+// 使用stl模板没有导出而报的警告
+#pragma warning(disable:4251)
+
 #include <string>
 #include <map>
 #include <vector>

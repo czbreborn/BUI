@@ -23,6 +23,8 @@ namespace BUI{
 		LPCTSTR GetDisabledImage();
 		void SetDisabledImage(LPCTSTR imageName);
 
+		void Event(TEventUI& event);
+
 	protected:
 		void PaintStatusImage(HDC hDC);
 
