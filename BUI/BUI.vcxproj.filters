@@ -51,65 +51,65 @@
     <ClInclude Include="BUI.h">
       <Filter>Head Files</Filter>
     </ClInclude>
-    <ClInclude Include="BUIWindow.h">
-      <Filter>Head Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="BMsgDef.h">
-      <Filter>Head Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="BRenderEngineManager.h">
-      <Filter>Head Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="BRenderEngineDef.h">
-      <Filter>Head Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="BEncodingTranslation.h">
-      <Filter>Head Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="BRenderEngineGdiPlus.h">
-      <Filter>Head Files\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="BUIObject.h">
-      <Filter>Head Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="BUIWidgetDef.h">
-      <Filter>Head Files\Widget</Filter>
-    </ClInclude>
-    <ClInclude Include="BSmartPointer.h">
-      <Filter>Head Files\Core</Filter>
-    </ClInclude>
     <ClInclude Include="BUIDef.h">
       <Filter>Head Files</Filter>
     </ClInclude>
-    <ClInclude Include="BSingleton.h">
+    <ClInclude Include="Core\BApplication.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\BMsgDef.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\BSmartPointer.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\BUIManager.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\BUIObject.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\BUIWidgetBuilder.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\BUIWindow.h">
+      <Filter>Head Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\BRenderEngineDef.h">
+      <Filter>Head Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\BRenderEngineGdiPlus.h">
+      <Filter>Head Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\BRenderEngineManager.h">
+      <Filter>Head Files\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\BEncodingTranslation.h">
       <Filter>Head Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="BUIManager.h">
-      <Filter>Head Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="BApplication.h">
-      <Filter>Head Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="BUILabel.h">
-      <Filter>Head Files\Widget</Filter>
-    </ClInclude>
-    <ClInclude Include="BUIWidget.h">
-      <Filter>Head Files\Widget</Filter>
-    </ClInclude>
-    <ClInclude Include="BUIPanel.h">
-      <Filter>Head Files\Widget</Filter>
-    </ClInclude>
-    <ClInclude Include="BUIWidgetBuilder.h">
-      <Filter>Head Files\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="BUIMarkup.h">
+    <ClInclude Include="Utils\BSingleton.h">
       <Filter>Head Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="BUIWidgetFactory.h">
+    <ClInclude Include="Utils\BUIMarkup.h">
+      <Filter>Head Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\BUIButton.h">
       <Filter>Head Files\Widget</Filter>
     </ClInclude>
-    <ClInclude Include="BUIButton.h">
-      <Filter>Head Files</Filter>
+    <ClInclude Include="Widget\BUILabel.h">
+      <Filter>Head Files\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\BUIPanel.h">
+      <Filter>Head Files\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\BUIWidget.h">
+      <Filter>Head Files\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\BUIWidgetDef.h">
+      <Filter>Head Files\Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget\BUIWidgetFactory.h">
+      <Filter>Head Files\Widget</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -119,50 +119,53 @@
     <ClCompile Include="BUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BUIWindow.cpp">
+    <ClCompile Include="Core\BApplication.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
-    <ClCompile Include="BRenderEngineManager.cpp">
+    <ClCompile Include="Core\BSmartPointer.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\BUIManager.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\BUIWidgetBuilder.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\BUIWindow.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\BRenderEngineGdiPlus.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="BEncodingTranslation.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="BRenderEngineGdiPlus.cpp">
+    <ClCompile Include="Render\BRenderEngineManager.cpp">
       <Filter>Source Files\Render</Filter>
     </ClCompile>
-    <ClCompile Include="BSingleton.cpp">
+    <ClCompile Include="Utils\BEncodingTranslation.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="BUIManager.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="BApplication.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="BUILabel.cpp">
-      <Filter>Source Files\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="BUIWidget.cpp">
-      <Filter>Source Files\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="BUIPanel.cpp">
-      <Filter>Source Files\Widget</Filter>
-    </ClCompile>
-    <ClCompile Include="BUIWidgetBuilder.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="BUIMarkup.cpp">
+    <ClCompile Include="Utils\BSingleton.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="XUnzip.cpp">
+    <ClCompile Include="Utils\BUIMarkup.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="BUIWidgetFactory.cpp">
+    <ClCompile Include="Utils\XUnzip.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\BUIButton.cpp">
       <Filter>Source Files\Widget</Filter>
     </ClCompile>
-    <ClCompile Include="BUIButton.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Widget\BUILabel.cpp">
+      <Filter>Source Files\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\BUIPanel.cpp">
+      <Filter>Source Files\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\BUIWidget.cpp">
+      <Filter>Source Files\Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget\BUIWidgetFactory.cpp">
+      <Filter>Source Files\Widget</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

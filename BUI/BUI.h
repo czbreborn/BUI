@@ -30,29 +30,29 @@ using namespace std;
 #include <windowsx.h>
 #include <tchar.h>
 
-#include "BSmartPointer.h"
-#include "BSingleton.h"
-#include "BEncodingTranslation.h"
-
 #include "BUIDef.h"
-#include "BMsgDef.h"
-#include "BUIWidgetDef.h"
 
-#include "BApplication.h"
-#include "BUIManager.h"
-#include "BRenderEngineDef.h"
-#include "BRenderEngineGdiPlus.h"
-#include "BRenderEngineManager.h"
-#include "BUIMarkup.h"
-#include "BUIWidgetBuilder.h"
-#include "BUIWidgetFactory.h"
+#include "Utils\BEncodingTranslation.h"
+#include "Utils\BSingleton.h"
+#include "Utils\BUIMarkup.h"
 
-#include "BUIObject.h"
-#include "BUIWindow.h"
-#include "BUIWidget.h"
-#include "BUILabel.h"
-#include "BUIButton.h"
-#include "BUIPanel.h"
+#include "Core\BApplication.h"
+#include "Core\BMsgDef.h"
+#include "Core\BSmartPointer.h"
+#include "Core\BUIManager.h"
+#include "Core\BUIObject.h"
+#include "Core\BUIWidgetBuilder.h"
+#include "Core\BUIWindow.h"
 
+#include "Render\BRenderEngineDef.h"
+#include "Render\BRenderEngineGdiPlus.h"
+#include "Render\BRenderEngineManager.h"
+
+#include "Widget\BUIWidgetDef.h"
+#include "Widget\BUIWidget.h"
+#include "Widget\BUILabel.h"
+#include "Widget\BUIButton.h"
+#include "Widget\BUIPanel.h"
+#include "Widget\BUIWidgetFactory.h"
 
 #endif

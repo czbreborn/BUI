@@ -79,51 +79,52 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BEncodingTranslation.h" />
-    <ClInclude Include="BMsgDef.h" />
-    <ClInclude Include="BApplication.h" />
-    <ClInclude Include="BRenderEngineDef.h" />
-    <ClInclude Include="BRenderEngineGdiPlus.h" />
-    <ClInclude Include="BRenderEngineManager.h" />
-    <ClInclude Include="BSingleton.h" />
-    <ClInclude Include="BSmartPointer.h" />
     <ClInclude Include="BUI.h" />
-    <ClInclude Include="BUIButton.h" />
     <ClInclude Include="BUIDef.h" />
-    <ClInclude Include="BUILabel.h" />
-    <ClInclude Include="BUIManager.h" />
-    <ClInclude Include="BUIObject.h" />
-    <ClInclude Include="BUIPanel.h" />
-    <ClInclude Include="BUIWidget.h" />
-    <ClInclude Include="BUIWidgetBuilder.h" />
-    <ClInclude Include="BUIWidgetDef.h" />
-    <ClInclude Include="BUIWidgetFactory.h" />
-    <ClInclude Include="BUIWindow.h" />
+    <ClInclude Include="Core\BApplication.h" />
+    <ClInclude Include="Core\BMsgDef.h" />
+    <ClInclude Include="Core\BSmartPointer.h" />
+    <ClInclude Include="Core\BUIManager.h" />
+    <ClInclude Include="Core\BUIObject.h" />
+    <ClInclude Include="Core\BUIWidgetBuilder.h" />
+    <ClInclude Include="Core\BUIWindow.h" />
+    <ClInclude Include="Render\BRenderEngineDef.h" />
+    <ClInclude Include="Render\BRenderEngineGdiPlus.h" />
+    <ClInclude Include="Render\BRenderEngineManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="BUIMarkup.h" />
+    <ClInclude Include="Utils\BEncodingTranslation.h" />
+    <ClInclude Include="Utils\BSingleton.h" />
+    <ClInclude Include="Utils\BUIMarkup.h" />
+    <ClInclude Include="Widget\BUIButton.h" />
+    <ClInclude Include="Widget\BUILabel.h" />
+    <ClInclude Include="Widget\BUIPanel.h" />
+    <ClInclude Include="Widget\BUIWidget.h" />
+    <ClInclude Include="Widget\BUIWidgetDef.h" />
+    <ClInclude Include="Widget\BUIWidgetFactory.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BEncodingTranslation.cpp" />
-    <ClCompile Include="BApplication.cpp" />
-    <ClCompile Include="BRenderEngineGdiPlus.cpp" />
-    <ClCompile Include="BRenderEngineManager.cpp" />
-    <ClCompile Include="BSingleton.cpp" />
     <ClCompile Include="BUI.cpp" />
-    <ClCompile Include="BUIButton.cpp" />
-    <ClCompile Include="BUILabel.cpp" />
-    <ClCompile Include="BUIManager.cpp" />
-    <ClCompile Include="BUIPanel.cpp" />
-    <ClCompile Include="BUIWidget.cpp" />
-    <ClCompile Include="BUIWidgetBuilder.cpp" />
-    <ClCompile Include="BUIWidgetFactory.cpp" />
-    <ClCompile Include="BUIWindow.cpp" />
+    <ClCompile Include="Core\BApplication.cpp" />
+    <ClCompile Include="Core\BSmartPointer.cpp" />
+    <ClCompile Include="Core\BUIManager.cpp" />
+    <ClCompile Include="Core\BUIWidgetBuilder.cpp" />
+    <ClCompile Include="Core\BUIWindow.cpp" />
+    <ClCompile Include="Render\BRenderEngineGdiPlus.cpp" />
+    <ClCompile Include="Render\BRenderEngineManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="BUIMarkup.cpp" />
-    <ClCompile Include="XUnzip.cpp" />
+    <ClCompile Include="Utils\BEncodingTranslation.cpp" />
+    <ClCompile Include="Utils\BSingleton.cpp" />
+    <ClCompile Include="Utils\BUIMarkup.cpp" />
+    <ClCompile Include="Utils\XUnzip.cpp" />
+    <ClCompile Include="Widget\BUIButton.cpp" />
+    <ClCompile Include="Widget\BUILabel.cpp" />
+    <ClCompile Include="Widget\BUIPanel.cpp" />
+    <ClCompile Include="Widget\BUIWidget.cpp" />
+    <ClCompile Include="Widget\BUIWidgetFactory.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
