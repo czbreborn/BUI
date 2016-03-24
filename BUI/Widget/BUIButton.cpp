@@ -67,7 +67,10 @@ namespace BUI{
 
 	void BUIButton::Event(TEventUI& event)
 	{
-
+		if (event.type == uievent_buttondown)
+		{
+			Invalidate();
+		}
 	}
 
 	void BUIButton::PaintStatusImage(HDC hDC)

@@ -16,6 +16,7 @@
 // 使用stl模板没有导出而报的警告
 #pragma warning(disable:4251)
 
+#include <sstream>
 #include <string>
 #include <map>
 #include <vector>
@@ -37,6 +38,7 @@ using namespace std;
 
 #include "Utils\BEncodingTranslation.h"
 #include "Utils\BSingleton.h"
+#include "Utils\BUIAssist.h"
 #include "Utils\BUIMarkup.h"
 
 #include "Core\BApplication.h"

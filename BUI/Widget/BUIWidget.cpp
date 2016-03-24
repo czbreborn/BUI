@@ -10,7 +10,9 @@ namespace BUI{
 		m_bkColor(0),
 		m_bkColor2(0),
 		m_imageFileName(_T("")),
-		m_focused(false)
+		m_bVisible(true),
+		m_bEnabled(true),
+		m_bFocused(false)
 		
 	{
 		m_rcItem.left = m_rcItem.right = m_rcItem.top = m_rcItem.bottom = 0;
@@ -194,14 +196,14 @@ namespace BUI{
 		if (event.type == uievent_setfocus)
 		{
 			Invalidate();
-			m_focused = true;
+			m_bFocused = true;
 			return;
 		}
 
 		if (event.type == uievent_killfocus)
 		{
 			Invalidate();
-			m_focused = false;
+			m_bFocused = false;
 			return;
 		}
 	}
@@ -221,5 +223,45 @@ namespace BUI{
 	BUIWidget* BUIWidget::GetParent() const
 	{
 		return m_parent;
+	}
+
+	BUIWidget* BUIWidget::FindControl(FINDWIDGET Proc, LPVOID pData, UINT uFlags)
+	{
+		if( (uFlags & UIFIND_VISIBLE) != 0 && !IsVisible() ) return NULL;
+		if( (uFlags & UIFIND_ENABLED) != 0 && !IsEnabled() ) return NULL;
+		if( (uFlags & UIFIND_HITTEST) != 0 && !::PtInRect(&m_rcItem, * static_cast<LPPOINT>(pData)) ) return NULL;
+		return Proc(this, pData);
+	}
+
+	bool BUIWidget::IsVisible() const
+	{
+		return m_bVisible;
+	}
+
+	bool BUIWidget::IsEnabled() const
+	{
+		return m_bEnabled;
+	}
+
+	bool BUIWidget::IsFocused() const
+	{
+		return m_bFocused;
+	}
+
+	void BUIWidget::SetVisible(bool bVisible/* = true*/)
+	{
+		m_bVisible = bVisible;
+	}
+
+	void BUIWidget::SetEnabled(bool bEnable/* = true*/)
+	{
+		m_bEnabled = bEnable;
+
+		Invalidate();
+	}
+
+	void BUIWidget::SetFocus()
+	{
+		// coding...........
 	}
 }

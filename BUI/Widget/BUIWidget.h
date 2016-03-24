@@ -4,6 +4,8 @@
 #pragma once
 
 namespace BUI {
+	typedef BUIWidget* (CALLBACK *FINDWIDGET)(BUIWidget*, LPVOID);
+
 	class BUI_API BUIWidget
 	{
 	public:
@@ -59,9 +61,21 @@ namespace BUI {
 		// 控件事件处理
 		virtual void Event(TEventUI& event);
 
+		// 控件管理
 		virtual BUIManager* GetManager() const;
 		virtual void SetManager(BUIManager* uiManager, BUIWidget* parent);
 		virtual BUIWidget* GetParent() const;
+
+		// 查找控件
+		virtual BUIWidget* FindControl(FINDWIDGET Proc, LPVOID pData, UINT uFlags);
+
+		// 控件状态
+		virtual bool IsVisible() const;
+		virtual bool IsEnabled() const;
+		virtual bool IsFocused() const;
+		virtual void SetVisible(bool bVisible = true);
+		virtual void SetEnabled(bool bEnable = true);
+		virtual	void SetFocus();
 
 	private:
 		BUIManager*	m_pUIManager;
@@ -78,7 +92,9 @@ namespace BUI {
 		RECT m_rcItem;
 		SIZE m_xy;
 		RECT m_rcPaint;
-		bool m_focused;
+		bool m_bVisible;
+		bool m_bEnabled;
+		bool m_bFocused;
 	};
 }
 #endif

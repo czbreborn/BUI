@@ -239,6 +239,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Utils\BUIAssist.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Utils\BUIMarkup.cpp"
 					>
 				</File>
@@ -338,6 +342,10 @@
 				</File>
 				<File
 					RelativePath=".\Utils\BSingleton.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Utils\BUIAssist.h"
 					>
 				</File>
 				<File

@@ -10,6 +10,9 @@ namespace BUI{
 		MSGBIND(WM_CREATE, BUIWindow::OnCreate);
 		MSGBIND(WM_DESTROY, BUIWindow::OnDestroy);
 		MSGBIND(WM_QUIT, BUIWindow::OnQuit);
+		MSGBIND(WM_NCCALCSIZE, BUIWindow::OnNcCalcSize);
+		MSGBIND(WM_NCPAINT, BUIWindow::OnNcPaint);
+		MSGBIND(WM_NCACTIVATE, BUIWindow::OnNcPaint);
 	}
 
 	BUIWindow::~BUIWindow()
@@ -94,8 +97,10 @@ namespace BUI{
 
 		m_pUIManager = new BUIManager;
 		m_pUIManager->Init(m_hwnd, GetWindowClassName());
-		BUIWidget* label = new BUIWidget;
+		BUIWidget* label = new BUIButton;
 		label->SetText(_T("test label"));
+		label->SetManager(m_pUIManager, NULL);
+		label->SetAttribute()
 		m_pUIManager->AttachWidget(label);
 
 		return 0;
@@ -111,14 +116,46 @@ namespace BUI{
 		return 0;
 	}
 
+	LRESULT BUIWindow::OnNcCalcSize(UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		return 0;
+	}
+
+	LRESULT BUIWindow::OnNcPaint(UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		return 0;
+	}
+
+	LRESULT BUIWindow::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		return 0;
+	}
+
 	LRESULT CALLBACK BUIWindow::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
-		static BUIWindow* pThis;
+		/*static BUIWindow* pThis;
 		if (uMsg == WM_NCCREATE)
 		{
 			LPCREATESTRUCT lpcs = reinterpret_cast<LPCREATESTRUCT>(lParam);
 			pThis = static_cast<BUIWindow*>(lpcs->lpCreateParams);
 			pThis->m_hwnd = hwnd;
+		}*/
+
+		BUIWindow* pThis = NULL;
+		if( uMsg == WM_NCCREATE ) {
+			LPCREATESTRUCT lpcs = reinterpret_cast<LPCREATESTRUCT>(lParam);
+			pThis = static_cast<BUIWindow*>(lpcs->lpCreateParams);
+			::SetProp(hwnd, _T("WndX"), (HANDLE) pThis);
+			pThis->m_hwnd = hwnd;
+		} 
+		else {
+			pThis = reinterpret_cast<BUIWindow*>(::GetProp(hwnd, _T("WndX")));
+			if( uMsg == WM_NCDESTROY && pThis != NULL ) {
+				LRESULT lRes = ::DefWindowProc(hwnd, uMsg, wParam, lParam);
+				::SetProp(hwnd, _T("WndX"), NULL);
+				pThis->m_hwnd = NULL;
+				return lRes;
+			}
 		}
 
 		if (pThis != NULL)

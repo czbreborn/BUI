@@ -12,7 +12,11 @@ public:
 		if (ret != -1)
 			return ret;
 
-		return m_pUIManager->MessageRouting(uMsg, wParam, lParam);
+		ret = m_pUIManager->MessageRouting(uMsg, wParam, lParam);
+		if (ret != -1)
+			return ret;
+
+		return BUIWindow::MessageRouting(uMsg, wParam, lParam);
 	}
 };
 

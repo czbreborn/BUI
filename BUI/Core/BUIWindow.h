@@ -34,6 +34,9 @@ namespace BUI{
 		virtual LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam);
 		virtual LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam);
 		virtual LRESULT OnQuit(UINT uMsg, WPARAM wParam, LPARAM lParam);
+		virtual LRESULT OnNcCalcSize(UINT uMsg, WPARAM wParam, LPARAM lParam);
+		virtual LRESULT OnNcPaint(UINT uMsg, WPARAM wParam, LPARAM lParam);
+		virtual LRESULT OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 	protected:
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

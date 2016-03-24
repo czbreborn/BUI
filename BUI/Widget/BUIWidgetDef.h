@@ -54,6 +54,17 @@ class BUIWidget;
 	#define BUI_WIN_LABEL		_T("BUILabel")
 	#define BUI_WIN_BUTTON		_T("BUIButton")
 
+	#define UIFLAG_TABSTOP       0x00000001
+	#define UIFLAG_SETCURSOR     0x00000002
+	#define UIFLAG_WANTRETURN    0x00000004
+
+	// Flags for FindControl()
+	#define UIFIND_ALL           0x00000000
+	#define UIFIND_VISIBLE       0x00000001
+	#define UIFIND_ENABLED       0x00000002
+	#define UIFIND_HITTEST       0x00000004
+	#define UIFIND_ME_FIRST      0x80000000
+
 	// 控件工厂相关定义
 	typedef BUIWidget* (*PCreateWidget)();
 	typedef map<LPCTSTR, PCreateWidget> CREATEWIDGETFUNCMAP;
