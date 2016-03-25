@@ -1,6 +1,9 @@
 #include "stdafx.h"
 
 namespace BUI{
+	IMPLEMENT_CREATEWIDGET(BUIButton)
+	IMPLEMENT_WIDGETTYPE(BUIButton, BUILabel)
+
 	BUIButton::BUIButton()
 		: m_normalImage(_T("")),
 		m_hotImage(_T("")),
@@ -12,17 +15,6 @@ namespace BUI{
 
 	BUIButton::~BUIButton()
 	{
-	}
-
-	LPCTSTR BUIButton::GetType() const
-	{
-		return BUI_WIN_BUTTON;
-	}
-
-	LPVOID BUIButton::GetInterface(LPCTSTR name)
-	{
-		if (_tcscmp(name, _T("Button")) == 0) return static_cast<BUIButton*>(this);
-		return BUILabel::GetInterface(name);
 	}
 
 	LPCTSTR BUIButton::GetNormalImage()

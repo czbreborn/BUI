@@ -17,8 +17,12 @@ namespace BUI{
 	public:
 		void SetProcessInstance(HINSTANCE inst);
 		HINSTANCE GetProcessInstance() const;
+
+		LPCTSTR GetApplicationPath();
+
 		void SetResourcesPath(LPCTSTR resPath);
 		LPCTSTR GetResourcesPath() const;
+
 		void SetResourceZip(LPCTSTR zipName);
 		LPCTSTR GetResourceZip() const;
 
@@ -38,6 +42,7 @@ namespace BUI{
 		HINSTANCE m_processInstance;
 		bstring m_resorcesPath;
 		bstring m_zipName;
+		bstring m_applicationPath;
 
 		typedef map<HWND, BUIManager*> UIMANAGERMAP;
 		typedef UIMANAGERMAP::iterator UIMANAGERMAPIT;

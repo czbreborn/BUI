@@ -211,6 +211,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Widget\BUIContainer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Widget\BUIEdit.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Widget\BUILabel.cpp"
 					>
 				</File>
@@ -226,6 +234,14 @@
 					RelativePath=".\Widget\BUIWidgetFactory.cpp"
 					>
 				</File>
+				<Filter
+					Name="Layout"
+					>
+					<File
+						RelativePath=".\Widget\BUIVerticalLayout.cpp"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="Utils"
@@ -361,6 +377,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Widget\BUIContainer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Widget\BUIEdit.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Widget\BUILabel.h"
 					>
 				</File>
@@ -380,6 +404,14 @@
 					RelativePath=".\Widget\BUIWidgetFactory.h"
 					>
 				</File>
+				<Filter
+					Name="Layout"
+					>
+					<File
+						RelativePath=".\Widget\BUIVerticalLayout.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter

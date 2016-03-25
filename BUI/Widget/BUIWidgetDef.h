@@ -65,9 +65,29 @@ class BUIWidget;
 	#define UIFIND_HITTEST       0x00000004
 	#define UIFIND_ME_FIRST      0x80000000
 
+	// 控件类型定义
+	#define DEFINE_WIDGETTYPE(classtype)				\
+		LPCTSTR GetType() const;						\
+		LPVOID GetInterface(LPCTSTR name);
+
+	#define IMPLEMENT_WIDGETTYPE(classtype, baseclass)	\
+		class baseclass;								\
+		LPCTSTR classtype::GetType() const				\
+		{												\
+			return _T(#classtype);						\
+		}												\
+		LPVOID classtype::GetInterface(LPCTSTR name)	\
+		{												\
+			bstring strType = GetType();				\
+			if (strType.length() > 3)					\
+			if (_tcscmp(name, strType.c_str() + 3) == 0)\
+				return static_cast<classtype*>(this);	\
+			return baseclass::GetInterface(name);		\
+		}
+
 	// 控件工厂相关定义
 	typedef BUIWidget* (*PCreateWidget)();
-	typedef map<LPCTSTR, PCreateWidget> CREATEWIDGETFUNCMAP;
+	typedef map<bstring, PCreateWidget> CREATEWIDGETFUNCMAP;
 	typedef CREATEWIDGETFUNCMAP::iterator CREATEWIDGETFUNCMAPIT;
 	#define DEFINE_CREATEWIDGET(classtype)	\
 		static BUIWidget* Create##classtype();	\

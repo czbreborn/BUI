@@ -7,6 +7,8 @@ namespace BUI{
 	BUIWidgetFactory::BUIWidgetFactory()
 	{
 		REGISTER_CREATEWIDGET(BUILabel)
+		REGISTER_CREATEWIDGET(BUIButton)
+		REGISTER_CREATEWIDGET(BUIVerticalLayout);
 	}
 
 

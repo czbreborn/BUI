@@ -87,21 +87,21 @@ namespace BUI{
 
 	LRESULT BUIWindow::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
-		LONG style = GetWindowLong(m_hwnd, GWL_STYLE);
+		/*LONG style = GetWindowLong(m_hwnd, GWL_STYLE);
 		style &= ~WS_CAPTION;
 		SetWindowLong(m_hwnd, GWL_STYLE, style); //去标题栏
 
 		LONG exStyle = GetWindowLong(m_hwnd, GWL_EXSTYLE);
 		exStyle &= ~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME);
-		SetWindowLong(m_hwnd, GWL_EXSTYLE, exStyle);  //去边框
+		SetWindowLong(m_hwnd, GWL_EXSTYLE, exStyle);  //去边框*/
 
 		m_pUIManager = new BUIManager;
 		m_pUIManager->Init(m_hwnd, GetWindowClassName());
-		BUIWidget* label = new BUIButton;
-		label->SetText(_T("test label"));
-		label->SetManager(m_pUIManager, NULL);
-		label->SetAttribute()
-		m_pUIManager->AttachWidget(label);
+		bstring xmlFilePath = BApplication::GetInstance()->GetApplicationPath();
+		xmlFilePath.append(GetWindowResource());
+		BUIWidgetBuilder builder;
+		BUIWidget* pRoot = builder.CreateWidget(xmlFilePath.c_str(), m_pUIManager);
+		m_pUIManager->AttachWidget(pRoot);
 
 		return 0;
 	}

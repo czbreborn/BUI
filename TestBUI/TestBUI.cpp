@@ -6,6 +6,8 @@ class TestWindow : public BUIWindow
 public:
 	TestWindow() {}
 	LPCTSTR GetWindowClassName() const { return _T("TestWindow"); }
+	LPCTSTR GetWindowResource() const { return _T("test.xml"); }
+
 	virtual LRESULT MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		LRESULT ret = MessageDelegate(uMsg, wParam, lParam);
@@ -23,7 +25,6 @@ public:
 int APIENTRY WinMain(HINSTANCE hinst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
 	BApplication::GetInstance()->SetProcessInstance(hinst);
-	BApplication::GetInstance()->SetResourcesPath(L"123");
 	RECT rc;
 	rc.left = 500;
 	rc.right = 800;

@@ -21,6 +21,7 @@
 #include <map>
 #include <vector>
 #include <list>
+#include <algorithm> 
 using namespace std;
 
 #ifdef UNICODE
@@ -57,6 +58,9 @@ using namespace std;
 #include "Widget\BUIWidget.h"
 #include "Widget\BUILabel.h"
 #include "Widget\BUIButton.h"
+#include "Widget\BUIEdit.h"
+#include "Widget\BUIContainer.h"
+#include "Widget\BUIVerticalLayout.h"
 #include "Widget\BUIPanel.h"
 #include "Widget\BUIWidgetFactory.h"
 

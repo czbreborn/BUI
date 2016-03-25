@@ -14,7 +14,7 @@ namespace BUI{
 	class CMarkupNode;
 	class BUIWidgetBuilder;
 	typedef void(BUIWidgetBuilder::*PARSE)(CMarkupNode* node);
-	typedef map<LPCTSTR, PARSE> RESOURCEPARSEMAP;
+	typedef map<bstring, PARSE> RESOURCEPARSEMAP;
 	typedef RESOURCEPARSEMAP::iterator RESPARSEMAPIT;
 	
 	class BUIManager;

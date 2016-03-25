@@ -5,7 +5,8 @@ namespace BUI{
 	BApplication::BApplication()
 		: m_processInstance(NULL),
 		m_resorcesPath(_T("")),
-		m_zipName(_T(""))
+		m_zipName(_T("")),
+		m_applicationPath(_T(""))
 	{
 	}
 
@@ -26,6 +27,24 @@ namespace BUI{
 	HINSTANCE BApplication::GetProcessInstance() const
 	{
 		return m_processInstance;
+	}
+
+	LPCTSTR BApplication::GetApplicationPath()
+	{
+		if(m_processInstance == NULL) 
+			return _T("");
+
+		if (m_applicationPath.empty())
+		{
+			TCHAR moduleName[MAX_PATH + 1] = { 0 };
+			::GetModuleFileName(m_processInstance, moduleName, MAX_PATH);
+			m_applicationPath = moduleName;
+			int pos = m_applicationPath.rfind(_T('\\'));
+			if (pos >= 0) 
+				m_applicationPath = m_applicationPath.substr(0, pos + 1);
+		}
+
+		return m_applicationPath.c_str();
 	}
 
 	void BApplication::SetResourcesPath(LPCTSTR resPath)

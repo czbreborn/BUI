@@ -43,6 +43,15 @@ namespace BUI {
 		virtual int GetHeight();
 		virtual int GetX();
 		virtual int GetY();
+		virtual RECT GetPadding() const;
+		virtual void SetPadding(RECT rcPadding); 		// 设置外边距，由上层窗口绘制
+		virtual SIZE GetFixedXY() const;         		// 实际大小位置使用GetPos获取，这里得到的是预设的参考值
+		virtual void SetFixedXY(SIZE szXY);      		// 仅float为true时有效
+		virtual int GetFixedWidth() const;       		// 实际大小位置使用GetPos获取，这里得到的是预设的参考值
+		virtual void SetFixedWidth(int cx);      		// 预设的参考值
+		virtual int GetFixedHeight() const;      		// 实际大小位置使用GetPos获取，这里得到的是预设的参考值
+		virtual void SetFixedHeight(int cy);     		// 预设的参考值
+		virtual SIZE EstimateSize(SIZE szAvailable);	// 预估控件大小
 
 		// 绘制相关
 		virtual void Paint(HDC hDC, const RECT& rcPaint);
@@ -89,8 +98,10 @@ namespace BUI {
 		DWORD m_bkColor2;
 		bstring m_imageFileName;
 
+		RECT m_rcPadding;
 		RECT m_rcItem;
-		SIZE m_xy;
+		SIZE m_cXY;
+		SIZE m_cxyFixed;
 		RECT m_rcPaint;
 		bool m_bVisible;
 		bool m_bEnabled;

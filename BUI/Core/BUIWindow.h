@@ -27,6 +27,7 @@ namespace BUI{
 	protected:
 		virtual LPCTSTR GetWindowClassName() const = 0;
 		virtual UINT GetClassStyle() const;
+		virtual LPCTSTR GetWindowResource() const = 0;
 
 		// 消息路由
 		virtual LRESULT MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam);

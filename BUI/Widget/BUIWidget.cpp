@@ -15,9 +15,12 @@ namespace BUI{
 		m_bFocused(false)
 		
 	{
-		m_rcItem.left = m_rcItem.right = m_rcItem.top = m_rcItem.bottom = 0;
-		m_xy.cx = m_xy.cy = 0;
-		m_rcPaint.left = m_rcPaint.right = m_rcPaint.top = m_rcPaint.bottom = 0;
+		m_cXY.cx = m_cXY.cy = 0;
+		m_cxyFixed.cx = m_cxyFixed.cy = 0;
+		
+		::ZeroMemory(&m_rcPadding, sizeof(RECT));
+		::ZeroMemory(&m_rcItem, sizeof(RECT));
+		::ZeroMemory(&m_rcPaint, sizeof(RECT));
 	}
 
 
@@ -113,12 +116,63 @@ namespace BUI{
 
 	int BUIWidget::GetX()
 	{
-		return m_xy.cx;
+		return m_rcItem.left;
 	}
 
 	int BUIWidget::GetY()
 	{
-		return m_xy.cy;
+		return m_rcItem.top;
+	}
+	RECT BUIWidget::GetPadding() const
+	{
+		return m_rcPadding;
+	}
+
+	void BUIWidget::SetPadding(RECT rcPadding)
+	{
+		m_rcPadding = rcPadding;
+	}
+
+	SIZE BUIWidget::GetFixedXY() const
+	{
+		return m_cXY;
+	}
+
+	void BUIWidget::SetFixedXY(SIZE szXY)
+	{
+		m_cXY.cx = szXY.cx;
+		m_cXY.cy = szXY.cy;
+	}
+
+	int BUIWidget::GetFixedWidth() const
+	{
+		return m_cxyFixed.cx;
+	}
+
+	void BUIWidget::SetFixedWidth(int cx)
+	{
+		if (cx < 0)
+			return ;
+
+		m_cxyFixed.cx = cx;
+	}
+
+	int BUIWidget::GetFixedHeight() const
+	{
+		return m_cxyFixed.cy;
+	}
+
+	void BUIWidget::SetFixedHeight(int cy)
+	{
+		if (cy < 0)
+			return ;
+
+		m_cxyFixed.cy = cy;
+	}
+
+	SIZE BUIWidget::EstimateSize(SIZE szAvailable)
+	{
+		return m_cxyFixed;
 	}
 
 	// 提示信息
@@ -182,7 +236,58 @@ namespace BUI{
 
 	void BUIWidget::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		
+		if (_tcscmp(pstrName, _T("pos")) == 0)
+		{
+			RECT rcPos = { 0 };
+			LPTSTR pstr = NULL;
+			rcPos.left = _tcstol(pstrValue, &pstr, 10);
+			rcPos.top = _tcstol(pstr + 1, &pstr, 10);
+			rcPos.right = _tcstol(pstr + 1, &pstr, 10);
+			rcPos.bottom = _tcstol(pstr + 1, &pstr, 10);
+			SIZE szXY = {rcPos.left, rcPos.top};
+			SetFixedXY(szXY);
+			SetFixedWidth(rcPos.right - rcPos.left);
+			SetFixedHeight(rcPos.bottom - rcPos.top);
+		}
+		else if(_tcscmp(pstrName, _T("padding")) == 0)
+		{
+			RECT rcPadding = { 0 };
+			LPTSTR pstr = NULL;
+			rcPadding.left = _tcstol(pstrValue, &pstr, 10); 
+			rcPadding.top = _tcstol(pstr + 1, &pstr, 10); 
+			rcPadding.right = _tcstol(pstr + 1, &pstr, 10); 
+			rcPadding.bottom = _tcstol(pstr + 1, &pstr, 10);
+			SetPadding(rcPadding);
+		}
+		else if(_tcscmp(pstrName, _T("bkcolor")) == 0 || _tcscmp(pstrName, _T("bkcolor1")) == 0) 
+		{
+			while (*pstrValue > _T('\0') && *pstrValue <= _T(' ')) 
+				pstrValue = ::CharNext(pstrValue);
+
+			if (*pstrValue == _T('#')) 
+				pstrValue = ::CharNext(pstrValue);
+
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetBkColor(clrColor);
+		}
+		else if( _tcscmp(pstrName, _T("bkcolor2")) == 0 ) 
+		{
+			while (*pstrValue > _T('\0') && *pstrValue <= _T(' ')) 
+				pstrValue = ::CharNext(pstrValue);
+
+			if (*pstrValue == _T('#')) 
+				pstrValue = ::CharNext(pstrValue);
+
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetBkColor2(clrColor);
+		}
+		else if( _tcscmp(pstrName, _T("name")) == 0 ) SetName(pstrValue);
+		else if( _tcscmp(pstrName, _T("text")) == 0 ) SetText(pstrValue);
+		else if( _tcscmp(pstrName, _T("tooltip")) == 0 ) SetToolTip(pstrValue);
+		else if( _tcscmp(pstrName, _T("enabled")) == 0 ) SetEnabled(_tcscmp(pstrValue, _T("true")) == 0);
+		else if( _tcscmp(pstrName, _T("visible")) == 0 ) SetVisible(_tcscmp(pstrValue, _T("true")) == 0);
 	}
 
 	void BUIWidget::Event(TEventUI& event)

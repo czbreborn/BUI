@@ -4,14 +4,15 @@
 #pragma once
 
 namespace BUI{
-	class BUIButton : public BUILabel
+	class BUI_API BUIButton : public BUILabel
 	{
+	public:
+		DEFINE_CREATEWIDGET(BUIButton)
+		DEFINE_WIDGETTYPE(BUIButton)
+
 	public:
 		BUIButton();
 		virtual ~BUIButton();
-
-		LPCTSTR GetType() const;
-		LPVOID GetInterface(LPCTSTR name);
 
 	public:
 		LPCTSTR GetNormalImage();
