@@ -13,6 +13,10 @@
 #define BUI_API __declspec(dllimport)
 #endif
 
+#include <windows.h>
+#include <windowsx.h>
+#include <tchar.h>
+
 // 使用stl模板没有导出而报的警告
 #pragma warning(disable:4251)
 
@@ -30,10 +34,13 @@ using namespace std;
 #define bstring string
 #endif
 
-#include <objbase.h>
-#include <Windows.h>
-#include <windowsx.h>
-#include <tchar.h>
+// 渲染引擎gdiplus
+#include <comdef.h>
+#include <gdiplus.h>
+#include <gdiplusenums.h>
+
+#pragma comment(lib, "gdiplus.lib")
+using namespace Gdiplus;
 
 #include "BUIDef.h"
 

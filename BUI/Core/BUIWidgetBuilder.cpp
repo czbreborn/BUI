@@ -44,21 +44,56 @@ namespace BUI{
 	BUIWidget* BUIWidgetBuilder::parse(CMarkupNode* pRoot, BUIWidget* parent)
 	{
 		BUIWidget* pWidget = NULL;
-		for (CMarkupNode node = pRoot->GetChild(); node.IsValid(); node = node.GetSibling()) {
+		for (CMarkupNode node = pRoot->GetChild(); node.IsValid(); node = node.GetSibling())
+		{
 			LPCTSTR nodeName = node.GetName();
+			// 资源解析已完成，这里直接跳过
+			RESPARSEMAPIT it = s_resoureParseMap.find(nodeName);
+			if (it != s_resoureParseMap.end())
+			{
+				continue;
+			}
+
 			bstring className = _T("BUI");
 			className.append(nodeName);
 			BUIWidget* newWidget = BUIWidgetFactory::GetInstance()->CreateWidget(className.c_str());
-			
-			if (node.HasAttributes()) {
+			assert(newWidget);
+
+			// Init default attributes
+			if (m_pWindowManager)
+			{
+				newWidget->SetManager(m_pWindowManager, NULL);
+				/*LPCTSTR pDefaultAttributes = m_pWindowManager->GetDefaultAttributeList(pstrClass);
+				if( pDefaultAttributes ) {
+					pControl->ApplyAttributeList(pDefaultAttributes);
+				}*/
+			}
+
+			if (node.HasAttributes())
+			{
 				int nAttributes = node.GetAttributeCount();
-				for (int i = 0; i < nAttributes; i++) {
+				for (int i = 0; i < nAttributes; i++) 
+				{
 					newWidget->SetAttribute(node.GetAttributeName(i), node.GetAttributeValue(i));
 				}
 			}
 
-			if (node.HasChildren()) {
+			if (node.HasChildren())
+			{
 				parse(&node, newWidget);
+			}
+
+			if (parent != NULL ) {
+				BUIContainer* pContainer = static_cast<BUIContainer*>(parent->GetInterface(_T("Container")));
+				assert(pContainer);
+				if (pContainer == NULL)
+					return NULL;
+
+				if(!pContainer->Add(newWidget))
+				{
+					delete newWidget;
+					continue;
+				}
 			}
 
 			if (pWidget == NULL) 

@@ -9,6 +9,9 @@ namespace BUI {
 	class BUI_API BUIWidget
 	{
 	public:
+		DEFINE_CREATEWIDGET(BUIWidget)
+
+	public:
 		BUIWidget();
 		virtual ~BUIWidget();
 
@@ -34,6 +37,19 @@ namespace BUI {
 		void SetBkColor2(DWORD bkColor);
 		LPCTSTR GetBkImage();
 		void SetBkImage(LPCTSTR pstrImage);
+
+		// 边框相关
+		DWORD GetBorderColor() const;
+		void SetBorderColor(DWORD borderColor);
+		DWORD GetFocusBorderColor() const;
+		void SetFocusBorderColor(DWORD focusBorderColor);
+		SIZE GetBorderRound() const;
+		void SetBorderRound(SIZE cxyRound);
+		RECT GetBorderSize() const;
+		void SetBorderSize(RECT rc);
+		void SetBorderSize(int size);
+		int GetBorderStyle() const;
+		void SetBorderStyle(int style);
 
 		// 位置相关
 		virtual const RECT& GetPos();
@@ -86,7 +102,7 @@ namespace BUI {
 		virtual void SetEnabled(bool bEnable = true);
 		virtual	void SetFocus();
 
-	private:
+	protected:
 		BUIManager*	m_pUIManager;
 		BUIWidget*	m_parent;
 		bstring m_widgetName;
@@ -96,13 +112,19 @@ namespace BUI {
 
 		DWORD m_bkColor;
 		DWORD m_bkColor2;
+		DWORD m_borderColor;
+		DWORD m_focusBorderColor;
+		int m_borderStyle;
+		SIZE m_borderRound;
+		RECT m_borderSize;
 		bstring m_imageFileName;
 
-		RECT m_rcPadding;
-		RECT m_rcItem;
 		SIZE m_cXY;
 		SIZE m_cxyFixed;
+		RECT m_rcPadding;
+		RECT m_rcItem;
 		RECT m_rcPaint;
+
 		bool m_bVisible;
 		bool m_bEnabled;
 		bool m_bFocused;

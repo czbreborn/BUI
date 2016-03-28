@@ -39,15 +39,17 @@ namespace BUI {
 		void RemoveAll();
 
 	public:
-		void Event(TEventUI& event);
-		void SetVisible(bool bVisible);
-
 		void SetPos(RECT rc);
 		void DoPaint(HDC hDC, const RECT& rcPaint);
+		void Event(TEventUI& event);
+		void SetVisible(bool bVisible);
 
 		virtual void SetInset(SIZE szInset);
 		virtual void SetInset(RECT rcInset);
 		virtual void SetPadding(int iPadding);
+
+		// ²éÕÒ¿Ø¼þ
+		BUIWidget* FindControl(FINDWIDGET Proc, LPVOID pData, UINT uFlags);
 
 	protected:
 		vector<BUIWidget*> m_itemWidget;

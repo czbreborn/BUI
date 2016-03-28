@@ -16,8 +16,8 @@ namespace BUI {
 		~BUIVerticalLayout(void);
 
 	public:
-		void DoEvent(TEventUI& event);
-		void SetPos(RECT rc, bool bNeedInvalidate = true);
+		void Event(TEventUI& event);
+		void SetPos(RECT rc);
 	};
 }
 #endif

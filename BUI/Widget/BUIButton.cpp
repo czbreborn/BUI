@@ -63,6 +63,8 @@ namespace BUI{
 		{
 			Invalidate();
 		}
+
+		BUILabel::Event(event);
 	}
 
 	void BUIButton::PaintStatusImage(HDC hDC)

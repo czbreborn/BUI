@@ -12,12 +12,12 @@ namespace BUI{
 	{
 	}
 
-	void BUIVerticalLayout::DoEvent(TEventUI& event)
+	void BUIVerticalLayout::Event(TEventUI& event)
 	{
-
+		BUIContainer::Event(event);
 	}
 
-	void BUIVerticalLayout::SetPos(RECT rc, bool bNeedInvalidate/* = true*/)
+	void BUIVerticalLayout::SetPos(RECT rc)
 	{
 		BUIContainer::SetPos(rc);
 		// µ÷ÕûÄÚ±ß¾à
@@ -35,7 +35,7 @@ namespace BUI{
 			BUIWidget* pWidget = GetItem(index);
 			if (pWidget == NULL)
 				continue;
-			if (pWidget->IsVisible())
+			if (!pWidget->IsVisible())
 				continue;
 
 			SIZE sz = pWidget->EstimateSize(szAvailable);
@@ -60,7 +60,7 @@ namespace BUI{
 			BUIWidget* pWidget = GetItem(index);
 			if (pWidget == NULL)
 				continue;
-			if (pWidget->IsVisible())
+			if (!pWidget->IsVisible())
 				continue;
 
 			SIZE sz = pWidget->EstimateSize(szRemaining);

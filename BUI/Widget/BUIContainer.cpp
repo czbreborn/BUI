@@ -80,21 +80,6 @@ namespace BUI {
 		m_itemWidget.clear();
 	}
 
-	void BUIContainer::Event(TEventUI& event)
-	{
-
-	}
-
-	void BUIContainer::SetVisible(bool bVisible)
-	{
-		for (unsigned int index = 0; index < m_itemWidget.size(); index++ )
-		{
-			static_cast<BUIWidget*>(m_itemWidget[index])->SetVisible(bVisible);
-		}
-
-		BUIWidget::SetVisible(bVisible);
-	}
-
 	void BUIContainer::SetPos(RECT rc)
 	{
 		BUIWidget::SetPos(rc);
@@ -105,6 +90,8 @@ namespace BUI {
 		RECT rcTemp = { 0 };
 		if (!::IntersectRect(&rcTemp, &rcPaint, &GetPos())) 
 			return;
+
+		BUIWidget::DoPaint(hDC, rcPaint);
 
 		for (unsigned int index = 0; index < m_itemWidget.size(); index++ ) {
 			BUIWidget* pWidget = static_cast<BUIWidget*>(m_itemWidget[index]);
@@ -119,6 +106,21 @@ namespace BUI {
 			
 			pWidget->DoPaint(hDC, rcPaint);
 		}
+	}
+
+	void BUIContainer::Event(TEventUI& event)
+	{
+		BUIWidget::Event(event);
+	}
+
+	void BUIContainer::SetVisible(bool bVisible)
+	{
+		for (unsigned int index = 0; index < m_itemWidget.size(); index++ )
+		{
+			static_cast<BUIWidget*>(m_itemWidget[index])->SetVisible(bVisible);
+		}
+
+		BUIWidget::SetVisible(bVisible);
 	}
 
 	void BUIContainer::SetInset(SIZE szInset)
@@ -137,4 +139,28 @@ namespace BUI {
 		m_iPadding = iPadding;
 	}
 
+	BUIWidget* BUIContainer::FindControl(FINDWIDGET Proc, LPVOID pData, UINT uFlags)
+	{
+		// Check if this guy is valid
+		BUIWidget* widget = NULL;
+		if ((uFlags & UIFIND_VISIBLE) != 0 && !IsVisible()) 
+			return widget;
+		if ((uFlags & UIFIND_ENABLED) != 0 && !IsEnabled()) 
+			return widget;
+		if ((uFlags & UIFIND_HITTEST) != 0 && 
+			!::PtInRect(&m_rcItem, * static_cast<LPPOINT>(pData))) 
+			return widget;
+
+		for (int index = 0; index < m_itemWidget.size(); index++)
+		{
+			BUIWidget* pResult = static_cast<BUIWidget*>(m_itemWidget[index])->FindControl(Proc, pData, uFlags);
+			if (pResult != NULL)
+			{
+				widget = pResult;
+				break;
+			} 
+		}
+
+		return widget;
+	}
 }

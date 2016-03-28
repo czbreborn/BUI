@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BUI", "BUI\BUI.vcproj", "{0E75FB63-9601-4CE0-B888-183BA0D416B3}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestBUI", "TestBUI\TestBUI.vcproj", "{E4C04624-DC83-47C9-B98C-8D8B72B2E5CB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E75FB63-9601-4CE0-B888-183BA0D416B3} = {0E75FB63-9601-4CE0-B888-183BA0D416B3}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

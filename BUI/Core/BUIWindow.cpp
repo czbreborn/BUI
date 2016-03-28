@@ -87,13 +87,13 @@ namespace BUI{
 
 	LRESULT BUIWindow::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
-		/*LONG style = GetWindowLong(m_hwnd, GWL_STYLE);
+		LONG style = GetWindowLong(m_hwnd, GWL_STYLE);
 		style &= ~WS_CAPTION;
 		SetWindowLong(m_hwnd, GWL_STYLE, style); //去标题栏
-
+		
 		LONG exStyle = GetWindowLong(m_hwnd, GWL_EXSTYLE);
 		exStyle &= ~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME);
-		SetWindowLong(m_hwnd, GWL_EXSTYLE, exStyle);  //去边框*/
+		SetWindowLong(m_hwnd, GWL_EXSTYLE, exStyle);  //去边框
 
 		m_pUIManager = new BUIManager;
 		m_pUIManager->Init(m_hwnd, GetWindowClassName());

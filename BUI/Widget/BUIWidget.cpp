@@ -1,6 +1,8 @@
 #include "stdafx.h"
 
 namespace BUI{
+	IMPLEMENT_CREATEWIDGET(BUIWidget)
+
 	BUIWidget::BUIWidget()
 		: m_pUIManager(NULL),
 		m_parent(NULL),
@@ -9,15 +11,21 @@ namespace BUI{
 		m_toolTip(_T("")),
 		m_bkColor(0),
 		m_bkColor2(0),
+		m_borderColor(0),
+		m_focusBorderColor(0),
+		m_borderStyle(PS_SOLID),
+		
 		m_imageFileName(_T("")),
 		m_bVisible(true),
 		m_bEnabled(true),
 		m_bFocused(false)
 		
 	{
+		m_borderRound.cx = m_borderRound.cy = 0;
 		m_cXY.cx = m_cXY.cy = 0;
 		m_cxyFixed.cx = m_cxyFixed.cy = 0;
 		
+		::ZeroMemory(&m_borderSize, sizeof(RECT));
 		::ZeroMemory(&m_rcPadding, sizeof(RECT));
 		::ZeroMemory(&m_rcItem, sizeof(RECT));
 		::ZeroMemory(&m_rcPaint, sizeof(RECT));
@@ -88,7 +96,67 @@ namespace BUI{
 		m_imageFileName = pstrImage;
 	}
 
-	// 位置相关
+	DWORD BUIWidget::GetBorderColor() const
+	{
+		return m_borderColor;
+	}
+
+	void BUIWidget::SetBorderColor(DWORD borderColor)
+	{
+		m_borderColor = borderColor;
+		Invalidate();
+	}
+
+	DWORD BUIWidget::GetFocusBorderColor() const
+	{
+		return m_focusBorderColor;
+	}
+
+	void BUIWidget::SetFocusBorderColor(DWORD focusBorderColor)
+	{
+		m_focusBorderColor = focusBorderColor;
+		Invalidate();
+	}
+
+	SIZE BUIWidget::GetBorderRound() const
+	{
+		return m_borderRound;
+	}
+
+	void BUIWidget::SetBorderRound(SIZE cxyRound)
+	{
+		m_borderRound  = cxyRound;
+		Invalidate();
+	}
+
+	RECT BUIWidget::GetBorderSize() const
+	{
+		return m_borderSize;
+	}
+
+	void BUIWidget::SetBorderSize(RECT rc)
+	{
+		m_borderSize = rc;
+		Invalidate();
+	}
+
+	void BUIWidget::SetBorderSize(int size)
+	{
+		m_borderSize.left = m_borderSize.top = m_borderSize.right = m_borderSize.bottom = size;
+		Invalidate();
+	}
+
+	int BUIWidget::GetBorderStyle() const
+	{
+		return m_borderStyle;
+	}
+
+	void BUIWidget::SetBorderStyle(int style)
+	{
+		m_borderStyle = style;
+		Invalidate();
+	}
+
 	const RECT& BUIWidget::GetPos()
 	{
 		return m_rcItem;
@@ -206,11 +274,18 @@ namespace BUI{
 
 	void BUIWidget::PaintBkColor(HDC hDC)
 	{
-		BRenderEngineManager::GetInstance()->RenderEngine()->DrawGradient(hDC, m_rcPaint, 0xFFFF0000, 0xFF0000FF);
+		DWORD bkColor2 = m_bkColor2;
+		if (m_bkColor2 == 0)
+			bkColor2 = m_bkColor;
+
+		if (m_borderRound.cx > 0 || m_borderRound.cy > 0)	// 绘制圆角矩形
+			BRenderEngineManager::GetInstance()->RenderEngine()->DrawRoundGradient(hDC, m_rcPaint, m_borderRound.cx, m_borderRound.cy, m_bkColor, bkColor2);
+		else
+			BRenderEngineManager::GetInstance()->RenderEngine()->DrawGradient(hDC, m_rcPaint, m_bkColor, bkColor2);
 	}
 
 	void BUIWidget::PaintBkImage(HDC hDC)
-	{
+	{	
 
 	}
 
@@ -221,17 +296,29 @@ namespace BUI{
 
 	void BUIWidget::PaintText(HDC hDC)
 	{
-		BRenderEngineManager::GetInstance()->RenderEngine()->DrawText(hDC, m_rcPaint, GetText(), 0xFFFFFFFF, 12, NULL, 0);
+		return ;
 	}
 
 	void BUIWidget::PaintBorder(HDC hDC)
 	{
+		DWORD borderColor = m_borderColor;
+		if (IsFocused() && m_focusBorderColor != 0)
+			borderColor = m_focusBorderColor;
 
+		if (m_borderRound.cx > 0 || m_borderRound.cy > 0)	// 绘制圆角矩形
+		{
+			BRenderEngineManager::GetInstance()->RenderEngine()->DrawRoundRect(hDC, m_rcPaint, m_borderSize.left, m_borderRound.cx, m_borderRound.cy, borderColor, m_borderStyle);
+		}
+		else	// 绘制直角矩形
+		{
+			BRenderEngineManager::GetInstance()->RenderEngine()->DrawRect(hDC, m_rcPaint, m_borderSize, borderColor, m_borderStyle);
+		}
 	}
 
 	void BUIWidget::Invalidate()
 	{
-		m_pUIManager->Invalidate(m_rcItem);
+		if (m_pUIManager != NULL)
+			m_pUIManager->Invalidate(m_rcItem);
 	}
 
 	void BUIWidget::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
@@ -283,7 +370,46 @@ namespace BUI{
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetBkColor2(clrColor);
 		}
+		else if( _tcscmp(pstrName, _T("bordercolor")) == 0 ) {
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetBorderColor(clrColor);
+		}
+		else if( _tcscmp(pstrName, _T("focusbordercolor")) == 0 ) {
+			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+			LPTSTR pstr = NULL;
+			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
+			SetFocusBorderColor(clrColor);
+		}
+		else if( _tcscmp(pstrName, _T("bordersize")) == 0 ) {
+			bstring strBorderSize = pstrValue;
+			if(strBorderSize.find(',') < 0)
+			{
+				SetBorderSize(_ttoi(strBorderSize.c_str()));
+			}
+			else
+			{
+				RECT rcBorder = { 0 };
+				LPTSTR pstr = NULL;
+				rcBorder.left = _tcstol(pstrValue, &pstr, 10);
+				rcBorder.top = _tcstol(pstr + 1, &pstr, 10);  
+				rcBorder.right = _tcstol(pstr + 1, &pstr, 10);
+				rcBorder.bottom = _tcstol(pstr + 1, &pstr, 10);
+				SetBorderSize(rcBorder);
+			}
+		}
+		else if( _tcscmp(pstrName, _T("borderstyle")) == 0 ) SetBorderStyle(_ttoi(pstrValue));
+		else if( _tcscmp(pstrName, _T("borderround")) == 0 ) {
+			SIZE cxyRound = { 0 };
+			LPTSTR pstr = NULL;
+			cxyRound.cx = _tcstol(pstrValue, &pstr, 10);
+			cxyRound.cy = _tcstol(pstr + 1, &pstr, 10);
+			SetBorderRound(cxyRound);
+		}
 		else if( _tcscmp(pstrName, _T("name")) == 0 ) SetName(pstrValue);
+		else if( _tcscmp(pstrName, _T("width")) == 0 ) SetFixedWidth(_ttoi(pstrValue));
+		else if( _tcscmp(pstrName, _T("height")) == 0 ) SetFixedHeight(_ttoi(pstrValue));
 		else if( _tcscmp(pstrName, _T("text")) == 0 ) SetText(pstrValue);
 		else if( _tcscmp(pstrName, _T("tooltip")) == 0 ) SetToolTip(pstrValue);
 		else if( _tcscmp(pstrName, _T("enabled")) == 0 ) SetEnabled(_tcscmp(pstrValue, _T("true")) == 0);
@@ -332,9 +458,17 @@ namespace BUI{
 
 	BUIWidget* BUIWidget::FindControl(FINDWIDGET Proc, LPVOID pData, UINT uFlags)
 	{
-		if( (uFlags & UIFIND_VISIBLE) != 0 && !IsVisible() ) return NULL;
-		if( (uFlags & UIFIND_ENABLED) != 0 && !IsEnabled() ) return NULL;
-		if( (uFlags & UIFIND_HITTEST) != 0 && !::PtInRect(&m_rcItem, * static_cast<LPPOINT>(pData)) ) return NULL;
+		if ((uFlags & UIFIND_VISIBLE) != 0 && !IsVisible()) 
+			return NULL;
+
+		if ((uFlags & UIFIND_ENABLED) != 0 && !IsEnabled()) 
+			return NULL;
+
+		POINT point = *static_cast<LPPOINT>(pData);
+		if ((uFlags & UIFIND_HITTEST) != 0 && 
+			!::PtInRect(&m_rcItem, point)) 
+			return NULL;
+
 		return Proc(this, pData);
 	}
 
