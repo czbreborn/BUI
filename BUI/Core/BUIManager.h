@@ -25,6 +25,8 @@ namespace BUI{
 		void Invalidate(RECT& rcItem);
 
 		bool AttachWidget(BUIWidget* root);
+		BUIWidget* GetFocus() const;
+		void SetFocus(BUIWidget* widget);
 
 	public:
 		LRESULT MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -62,6 +64,8 @@ namespace BUI{
 		bool m_bUpdateNeeded;
 
 		BUIWidget* m_rootWidget;
+		BUIWidget* m_focusedWidget;
+		BUIWidget* m_eventClickWidget;
 	};
 }
 

@@ -286,12 +286,13 @@ namespace BUI{
 
 	void BUIWidget::PaintBkImage(HDC hDC)
 	{	
-
+		if (!m_imageFileName.empty())
+			BRenderEngineManager::GetInstance()->RenderEngine()->DrawImage(hDC, m_imageFileName.c_str(), m_rcPaint);
 	}
 
 	void BUIWidget::PaintStatusImage(HDC hDC)
 	{
-
+		return ;
 	}
 
 	void BUIWidget::PaintText(HDC hDC)

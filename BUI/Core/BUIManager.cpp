@@ -8,7 +8,8 @@ namespace BUI{
 		m_hdcPaint(NULL),
 		m_name(_T("")),
 		m_bUpdateNeeded(false),
-		m_rootWidget(NULL)
+		m_rootWidget(NULL),
+		m_eventClickWidget(NULL)
 	{
 	#define WMPROCBIND(msg, func) \
 		s_wmProcMap.insert(make_pair(msg, SELECTOR(func)))
@@ -89,6 +90,16 @@ namespace BUI{
 		return true;
 	}
 
+	BUIWidget* BUIManager::GetFocus() const
+	{
+
+	}
+
+	void BUIManager::SetFocus(BUIWidget* widget)
+	{
+
+	}
+
 	LRESULT BUIManager::MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		LRESULT res = -1;
@@ -127,6 +138,13 @@ namespace BUI{
 			::GetClientRect(m_hWndPaint, &rcClient);
 
 			m_rootWidget->SetPos(rcClient);
+			SIZE szxy = m_rootWidget->GetBorderRound();
+			if (szxy.cx > 0 || szxy.cy > 0)
+			{
+				RECT rootRc = m_rootWidget->GetPos();
+				BRenderEngineManager::GetInstance()->RenderEngine()->DrawWindowRoundRgn(m_hWndPaint, rootRc, szxy.cx, szxy.cy);
+			}
+
 			m_rootWidget->Paint(m_hdcPaint, rcClient);
 		}
 		EndPaint(m_hWndPaint, &ps);
@@ -152,7 +170,8 @@ namespace BUI{
 			return 1;
 		if( pWidget->GetManager() != this ) 
 			return 1;
-		//m_pEventClick = pControl;
+
+		m_eventClickWidget = pWidget;
 		pWidget->SetFocus();
 		TEventUI event = { 0 };
 		event.type = uievent_buttondown;
@@ -170,6 +189,21 @@ namespace BUI{
 
 	LRESULT BUIManager::OnLButtonUp(WPARAM wParam, LPARAM lParam)
 	{
+		POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+		//m_ptLastMousePos = pt;
+		if (m_eventClickWidget == NULL)
+			return 1;
+
+		::ReleaseCapture();
+		TEventUI event = { 0 };
+		event.type = uievent_buttonup;
+		event.wParam = wParam;
+		event.lParam = lParam;
+		event.ptMouse = pt;
+		event.wKeyState = wParam;
+		event.dwTimestamp = ::GetTickCount();
+		m_eventClickWidget->Event(event);
+		m_eventClickWidget = NULL;
 		return 0;
 	}
 

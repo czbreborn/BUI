@@ -56,6 +56,42 @@ namespace BUI{
 		}
 	}
 
+	StringAlignment BRenderEngineGdiPlus::convertAlignment(UINT align)
+	{
+		switch (align & 0x0F)
+		{
+		case textalignment_left:
+			return StringAlignmentNear;
+
+		case textalignment_right:
+			return StringAlignmentFar;
+
+		case textalignment_center:
+			return StringAlignmentCenter;
+
+		default:
+			return StringAlignmentCenter;
+		}
+	}
+
+	StringAlignment BRenderEngineGdiPlus::convertLineAlignment(UINT align)
+	{
+		switch (align & 0xF0)
+		{
+		case textalignment_top:
+			return StringAlignmentNear;
+
+		case textalignment_bottom:
+			return StringAlignmentFar;
+
+		case textalignment_vcenter:
+			return StringAlignmentCenter;
+
+		default:
+			return StringAlignmentCenter;
+		}
+	}
+
 	GraphicsPath* BRenderEngineGdiPlus::genRoundRectPath(const RECT& rc, int width, int height)
 	{
 		GraphicsPath* pPath = new GraphicsPath();
@@ -118,19 +154,24 @@ namespace BUI{
 		delete pPath;
 	}
 
-	void BRenderEngineGdiPlus::DrawText(HDC hdc, const RECT& rc, LPCTSTR lpstrText, DWORD textColor, int fontSize, LPCTSTR pstrfontFamily, UINT style)
+	void BRenderEngineGdiPlus::DrawText(HDC hdc, const RECT& rc, LPCTSTR lpstrText, DWORD textColor, int fontSize, LPCTSTR pstrfontFamily, UINT style/* = FontStyleRegular*/, UINT align/* = ALIGNMENTMIDDLE*/)
 	{
 		bstring strfamily(_T("Arial"));
 		if (pstrfontFamily != NULL && pstrfontFamily[0] != _T('\0'))
 			strfamily = pstrfontFamily;
 		FontFamily fontFamily(strfamily.c_str());
 		Gdiplus::Font font(&fontFamily, fontSize, style, UnitPixel);
-		Gdiplus::PointF point(rc.left, rc.top);
+
+		Gdiplus::RectF rcf(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 		SolidBrush brush(textColor);
+
+		StringFormat stringFormat;
+		stringFormat.SetAlignment(convertAlignment(align));
+		stringFormat.SetLineAlignment(convertLineAlignment(align));
 
 		Graphics grap(hdc);
 		grap.SetTextRenderingHint(TextRenderingHintAntiAlias);
-		grap.DrawString(lpstrText, -1, &font, point, &brush);
+		grap.DrawString(lpstrText, -1, &font, rcf, &stringFormat, &brush);
 	}
 
 	void BRenderEngineGdiPlus::DrawImage(HDC hdc, LPCTSTR lpstrFileName, const RECT& rc)

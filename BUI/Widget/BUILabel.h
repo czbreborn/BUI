@@ -19,13 +19,20 @@ namespace BUI{
 		int GetTextStyle() const;
 		void SetTextColor(DWORD dwTextColor);
 		DWORD GetTextColor() const;
+		void SetTextAlign(UINT align);
+		UINT GetTextAlign();
 
+		// 控件属性相关
+		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
+
+	public:
 		void PaintText(HDC hDC);
 		void Event(TEventUI& event);
 
 	protected:
 		DWORD m_textColor;
 		int m_textStyle;
+		UINT m_textAlign;
 	};
 } // namespace BUI
 

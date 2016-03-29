@@ -65,6 +65,15 @@ class BUIWidget;
 	#define UIFIND_HITTEST       0x00000004
 	#define UIFIND_ME_FIRST      0x80000000
 
+	// Flags used for controlling the paint
+	#define UISTATE_FOCUSED      0x00000001
+	#define UISTATE_SELECTED     0x00000002
+	#define UISTATE_DISABLED     0x00000004
+	#define UISTATE_HOT          0x00000008
+	#define UISTATE_PUSHED       0x00000010
+	#define UISTATE_READONLY     0x00000020
+	#define UISTATE_CAPTURED     0x00000040
+
 	// 控件类型定义
 	#define DEFINE_WIDGETTYPE(classtype)				\
 		LPCTSTR GetType() const;						\
