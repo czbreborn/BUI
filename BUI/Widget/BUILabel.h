@@ -15,12 +15,31 @@ namespace BUI{
 		virtual ~BUILabel();
 
 	public:
+		// 文字样式，粗体、斜体等
 		void SetTextStyle(int style);
 		int GetTextStyle() const;
-		void SetTextColor(DWORD dwTextColor);
+		// color和color1用于文字渐变
+		void SetTextColor(DWORD textColor);
 		DWORD GetTextColor() const;
+		void SetTextColor1(DWORD textColor);
+		DWORD GetTextColor1() const;
+		// 文字位置
 		void SetTextAlign(UINT align);
 		UINT GetTextAlign();
+
+		// 发光字体
+		void SetEnabledGlow(bool enabledGlow);
+		bool GetEnabledGlow();
+		void SetGlowColor(DWORD glowColor);
+		DWORD GetGlowColor();
+
+		// 文字描边
+		void SetEnabledStroke(bool enabledStroke);
+		bool GetEnabledStroke();
+		void SetStrokeColor(DWORD strokeColor);
+		DWORD GetStrokeColor();
+		void SetStrokeColor1(DWORD strokeColor);
+		DWORD GetStrokeColor1();
 
 		// 控件属性相关
 		void SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue);
@@ -30,9 +49,7 @@ namespace BUI{
 		void Event(TEventUI& event);
 
 	protected:
-		DWORD m_textColor;
-		int m_textStyle;
-		UINT m_textAlign;
+		TextDescription m_textDesc;
 	};
 } // namespace BUI
 

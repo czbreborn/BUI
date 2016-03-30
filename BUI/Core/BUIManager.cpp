@@ -9,6 +9,7 @@ namespace BUI{
 		m_name(_T("")),
 		m_bUpdateNeeded(false),
 		m_rootWidget(NULL),
+		m_focusedWidget(NULL),
 		m_eventClickWidget(NULL)
 	{
 	#define WMPROCBIND(msg, func) \
@@ -92,7 +93,7 @@ namespace BUI{
 
 	BUIWidget* BUIManager::GetFocus() const
 	{
-
+		return m_focusedWidget;
 	}
 
 	void BUIManager::SetFocus(BUIWidget* widget)

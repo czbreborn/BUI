@@ -67,6 +67,7 @@ using namespace Gdiplus;
 #include "Widget\BUIButton.h"
 #include "Widget\BUIEdit.h"
 #include "Widget\BUIContainer.h"
+#include "Widget\BUIHorizontalLayout.h"
 #include "Widget\BUIVerticalLayout.h"
 #include "Widget\BUIPanel.h"
 #include "Widget\BUIWidgetFactory.h"

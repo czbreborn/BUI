@@ -238,6 +238,10 @@
 					Name="Layout"
 					>
 					<File
+						RelativePath=".\Widget\BUIHorizontalLayout.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\Widget\BUIVerticalLayout.cpp"
 						>
 					</File>
@@ -407,6 +411,10 @@
 				<Filter
 					Name="Layout"
 					>
+					<File
+						RelativePath=".\Widget\BUIHorizontalLayout.h"
+						>
+					</File>
 					<File
 						RelativePath=".\Widget\BUIVerticalLayout.h"
 						>

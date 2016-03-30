@@ -287,7 +287,11 @@ namespace BUI{
 	void BUIWidget::PaintBkImage(HDC hDC)
 	{	
 		if (!m_imageFileName.empty())
-			BRenderEngineManager::GetInstance()->RenderEngine()->DrawImage(hDC, m_imageFileName.c_str(), m_rcPaint);
+		{
+			bstring filePath = BApplication::GetInstance()->GetApplicationPath();
+			filePath += m_imageFileName;
+			BRenderEngineManager::GetInstance()->RenderEngine()->DrawImage(hDC, filePath.c_str(), m_rcPaint);
+		}
 	}
 
 	void BUIWidget::PaintStatusImage(HDC hDC)
@@ -347,7 +351,7 @@ namespace BUI{
 			rcPadding.bottom = _tcstol(pstr + 1, &pstr, 10);
 			SetPadding(rcPadding);
 		}
-		else if(_tcscmp(pstrName, _T("bkcolor")) == 0 || _tcscmp(pstrName, _T("bkcolor1")) == 0) 
+		else if (_tcscmp(pstrName, _T("bkcolor")) == 0 || _tcscmp(pstrName, _T("bkcolor1")) == 0) 
 		{
 			while (*pstrValue > _T('\0') && *pstrValue <= _T(' ')) 
 				pstrValue = ::CharNext(pstrValue);
@@ -359,7 +363,7 @@ namespace BUI{
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetBkColor(clrColor);
 		}
-		else if( _tcscmp(pstrName, _T("bkcolor2")) == 0 ) 
+		else if (_tcscmp(pstrName, _T("bkcolor2")) == 0) 
 		{
 			while (*pstrValue > _T('\0') && *pstrValue <= _T(' ')) 
 				pstrValue = ::CharNext(pstrValue);
@@ -371,21 +375,32 @@ namespace BUI{
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetBkColor2(clrColor);
 		}
-		else if( _tcscmp(pstrName, _T("bordercolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+		else if (_tcscmp(pstrName, _T("bkimage")) == 0)
+		{
+			SetBkImage(pstrValue);
+		}
+		else if (_tcscmp(pstrName, _T("bordercolor")) == 0)
+		{
+			if (*pstrValue == _T('#')) 
+				pstrValue = ::CharNext(pstrValue);
+
 			LPTSTR pstr = NULL;
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetBorderColor(clrColor);
 		}
-		else if( _tcscmp(pstrName, _T("focusbordercolor")) == 0 ) {
-			if( *pstrValue == _T('#')) pstrValue = ::CharNext(pstrValue);
+		else if (_tcscmp(pstrName, _T("focusbordercolor")) == 0)
+		{
+			if (*pstrValue == _T('#')) 
+				pstrValue = ::CharNext(pstrValue);
+
 			LPTSTR pstr = NULL;
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetFocusBorderColor(clrColor);
 		}
-		else if( _tcscmp(pstrName, _T("bordersize")) == 0 ) {
+		else if (_tcscmp(pstrName, _T("bordersize")) == 0)
+		{
 			bstring strBorderSize = pstrValue;
-			if(strBorderSize.find(',') < 0)
+			if (strBorderSize.find(',') < 0)
 			{
 				SetBorderSize(_ttoi(strBorderSize.c_str()));
 			}
@@ -400,21 +415,25 @@ namespace BUI{
 				SetBorderSize(rcBorder);
 			}
 		}
-		else if( _tcscmp(pstrName, _T("borderstyle")) == 0 ) SetBorderStyle(_ttoi(pstrValue));
-		else if( _tcscmp(pstrName, _T("borderround")) == 0 ) {
+		else if (_tcscmp(pstrName, _T("borderstyle")) == 0) 
+		{
+			SetBorderStyle(_ttoi(pstrValue));
+		}
+		else if (_tcscmp(pstrName, _T("borderround")) == 0)
+		{
 			SIZE cxyRound = { 0 };
 			LPTSTR pstr = NULL;
 			cxyRound.cx = _tcstol(pstrValue, &pstr, 10);
 			cxyRound.cy = _tcstol(pstr + 1, &pstr, 10);
 			SetBorderRound(cxyRound);
 		}
-		else if( _tcscmp(pstrName, _T("name")) == 0 ) SetName(pstrValue);
-		else if( _tcscmp(pstrName, _T("width")) == 0 ) SetFixedWidth(_ttoi(pstrValue));
-		else if( _tcscmp(pstrName, _T("height")) == 0 ) SetFixedHeight(_ttoi(pstrValue));
-		else if( _tcscmp(pstrName, _T("text")) == 0 ) SetText(pstrValue);
-		else if( _tcscmp(pstrName, _T("tooltip")) == 0 ) SetToolTip(pstrValue);
-		else if( _tcscmp(pstrName, _T("enabled")) == 0 ) SetEnabled(_tcscmp(pstrValue, _T("true")) == 0);
-		else if( _tcscmp(pstrName, _T("visible")) == 0 ) SetVisible(_tcscmp(pstrValue, _T("true")) == 0);
+		else if (_tcscmp(pstrName, _T("name")) == 0) SetName(pstrValue);
+		else if (_tcscmp(pstrName, _T("width")) == 0) SetFixedWidth(_ttoi(pstrValue));
+		else if (_tcscmp(pstrName, _T("height")) == 0) SetFixedHeight(_ttoi(pstrValue));
+		else if (_tcscmp(pstrName, _T("text")) == 0) SetText(pstrValue);
+		else if (_tcscmp(pstrName, _T("tooltip")) == 0) SetToolTip(pstrValue);
+		else if (_tcscmp(pstrName, _T("enabled")) == 0) SetEnabled(_tcscmp(pstrValue, _T("true")) == 0);
+		else if (_tcscmp(pstrName, _T("visible")) == 0) SetVisible(_tcscmp(pstrValue, _T("true")) == 0);
 	}
 
 	void BUIWidget::Event(TEventUI& event)

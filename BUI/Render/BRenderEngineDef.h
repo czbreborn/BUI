@@ -33,6 +33,23 @@ namespace BUI{
 	#define ALIGNMENTMIDDLE (textalignment_center | textalignment_vcenter)
 	#define ALIGNMENTLEFTTOP (textalignment_left | textalignment_top)
 
+	typedef struct TEXTDESCRIPTION
+	{
+		bstring content;
+		DWORD textColor;
+		DWORD textColor1;
+		DWORD fontSize;
+		bstring fontFamily;
+		UINT style;
+		UINT align;
+		StringFormatFlags formatFlags;
+		bool bGlow;				// 是否发光
+		DWORD glowColor;		// 发光颜色
+		bool bStroke;			// 是否描边
+		DWORD singleColor;		// 描边的单边颜色
+		DWORD doubleColor;		// 描边的双边颜色
+	} TextDescription;
+
 	class BIRenderEngine
 	{
 	public:
@@ -43,11 +60,10 @@ namespace BUI{
 		virtual void DrawRect(HDC hdc, const RECT& rc, int size, DWORD penColor, int style = penstyle_solid) = 0;
 		virtual void DrawRect(HDC hdc, const RECT& rc, RECT borderSize, DWORD penColor, int style = penstyle_solid) = 0;
 		virtual void DrawRoundRect(HDC hdc, const RECT& rc, int size, int width, int height, DWORD penColor, int style = penstyle_solid) = 0;
-		virtual void DrawText(HDC hdc, const RECT& rc, LPCTSTR lpstrText, DWORD textColor, int fontSize, LPCTSTR pstrfontFamily, UINT style = FontStyleRegular, UINT align = ALIGNMENTMIDDLE) = 0;
+		virtual void DrawText(HDC hdc, const RECT& rc, const TextDescription& textDesc) = 0;
 		virtual void DrawImage(HDC hdc, LPCTSTR lpstrFileName, const RECT& rc) = 0;
 		virtual void DrawGradient(HDC hdc, const RECT& rc, DWORD dwColor1, DWORD dwColor2) = 0;
 		virtual void DrawRoundGradient(HDC hdc, const RECT& rc, int width, int height, DWORD dwColor1, DWORD dwColor2) = 0;
-
 		virtual bool DrawWindowRgn(HWND hwnd, const RECT& rc) = 0;
 		virtual bool DrawWindowRoundRgn(HWND hwnd, const RECT& rc, int width, int height) = 0;
 	};

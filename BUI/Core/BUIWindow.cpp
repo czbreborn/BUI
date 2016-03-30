@@ -108,6 +108,7 @@ namespace BUI{
 
 	LRESULT BUIWindow::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
+		PostMessage(m_hwnd, WM_QUIT, 0, 0);
 		return 0;
 	}
 
