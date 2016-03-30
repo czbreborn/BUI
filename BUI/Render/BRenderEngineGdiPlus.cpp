@@ -235,13 +235,20 @@ namespace BUI{
 		grap.DrawPath(&pen, &path);
 	}
 
-	void BRenderEngineGdiPlus::DrawImage(HDC hdc, LPCTSTR lpstrFileName, const RECT& rc)
+	void BRenderEngineGdiPlus::DrawImage(HDC hdc, LPCTSTR lpstrFileName, const RECT& rcDst, const RECT& rcPaint)
 	{
 		Image image(lpstrFileName);
 
 		Graphics grap(hdc);
-		Gdiplus::Rect rect(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
-		grap.DrawImage(&image, rect);
+		Gdiplus::RectF rcfDst(rcPaint.left, rcPaint.top, rcPaint.right - rcPaint.left, rcPaint.bottom - rcPaint.top);
+		rcfDst.Width = min(image.GetWidth(), rcfDst.Width);
+		rcfDst.Height = min(image.GetHeight(), rcfDst.Height);
+
+		Gdiplus::RectF rcfPaint(rcPaint.left, rcPaint.top, rcPaint.right - rcPaint.left, rcPaint.bottom - rcPaint.top);
+		Gdiplus::RectF rcfImage(rcDst.left, rcDst.top, rcDst.left + image.GetWidth(), rcDst.top + image.GetHeight());
+		rcfPaint.Intersect(rcfImage);
+		rcfDst.Intersect(rcfImage);
+		grap.DrawImage(&image, rcfDst, rcfPaint.GetLeft() - rcfImage.GetLeft(), rcfPaint.GetTop() - rcfImage.GetTop(), rcfPaint.GetRight() - rcfPaint.GetLeft(), rcfPaint.GetBottom() - rcfPaint.GetTop(), UnitPixel);
 	}
 
 	void BRenderEngineGdiPlus::DrawGradient(HDC hdc, const RECT& rc, DWORD dwColor1, DWORD dwColor2)

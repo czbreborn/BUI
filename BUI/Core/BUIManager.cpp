@@ -8,6 +8,7 @@ namespace BUI{
 		m_hdcPaint(NULL),
 		m_name(_T("")),
 		m_bUpdateNeeded(false),
+		m_bResizeNeeded(false),
 		m_rootWidget(NULL),
 		m_focusedWidget(NULL),
 		m_eventClickWidget(NULL)
@@ -32,6 +33,7 @@ namespace BUI{
 		WMPROCBIND(WM_MOUSEWHEEL, BUIManager::OnMouseWheel);	
 		WMPROCBIND(WM_SETCURSOR, BUIManager::OnSetCursor);
 		WMPROCBIND(WM_COMMAND, BUIManager::OnCommand);
+		WMPROCBIND(WM_SIZE, BUIManager::OnSize);
 	}
 
 
@@ -88,6 +90,8 @@ namespace BUI{
 	bool BUIManager::AttachWidget(BUIWidget* root)
 	{
 		m_rootWidget = root;
+
+		m_bResizeNeeded = true;
 		return true;
 	}
 
@@ -135,10 +139,15 @@ namespace BUI{
 		BeginPaint(m_hWndPaint, &ps);
 		if (m_rootWidget != NULL)
 		{
-			RECT rcClient = { 0 };
-			::GetClientRect(m_hWndPaint, &rcClient);
+			if (m_bResizeNeeded)
+			{
+				m_bResizeNeeded = false;
+				RECT rcClient = { 0 };
+				::GetClientRect(m_hWndPaint, &rcClient);
 
-			m_rootWidget->SetPos(rcClient);
+				m_rootWidget->SetPos(rcClient);
+			}
+			
 			SIZE szxy = m_rootWidget->GetBorderRound();
 			if (szxy.cx > 0 || szxy.cy > 0)
 			{
@@ -146,7 +155,7 @@ namespace BUI{
 				BRenderEngineManager::GetInstance()->RenderEngine()->DrawWindowRoundRgn(m_hWndPaint, rootRc, szxy.cx, szxy.cy);
 			}
 
-			m_rootWidget->Paint(m_hdcPaint, rcClient);
+			m_rootWidget->Paint(m_hdcPaint, ps.rcPaint/*rcClient*/);
 		}
 		EndPaint(m_hWndPaint, &ps);
 
@@ -260,6 +269,12 @@ namespace BUI{
 
 		HWND hWndChild = (HWND)lParam;
 		return ::SendMessage(hWndChild, OCM__BASE + WM_COMMAND, wParam, lParam);
+	}
+
+	LRESULT BUIManager::OnSize(WPARAM wParam, LPARAM lParam)
+	{
+		m_bResizeNeeded = true;
+		return 0;
 	}
 
 	BUIWidget* BUIManager::FindControl(POINT pt) const

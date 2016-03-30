@@ -49,6 +49,7 @@ namespace BUI{
 		LRESULT OnSetCursor(WPARAM wParam, LPARAM lParam);
 
 		LRESULT OnCommand(WPARAM wParam, LPARAM lParam);
+		LRESULT OnSize(WPARAM wParam, LPARAM lParam);
 
 	private:
 		BUIWidget* FindControl(POINT pt) const;
@@ -62,6 +63,7 @@ namespace BUI{
 		bstring m_name;
 
 		bool m_bUpdateNeeded;
+		bool m_bResizeNeeded;
 
 		BUIWidget* m_rootWidget;
 		BUIWidget* m_focusedWidget;

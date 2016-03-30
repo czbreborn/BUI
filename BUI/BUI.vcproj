@@ -275,6 +275,10 @@
 				Name="Render"
 				>
 				<File
+					RelativePath=".\Render\BRenderEngineAssist.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Render\BRenderEngineGdiPlus.cpp"
 					>
 				</File>
@@ -340,6 +344,10 @@
 			<Filter
 				Name="Render"
 				>
+				<File
+					RelativePath=".\Render\BRenderEngineAssist.h"
+					>
+				</File>
 				<File
 					RelativePath=".\Render\BRenderEngineDef.h"
 					>

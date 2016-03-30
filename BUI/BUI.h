@@ -58,6 +58,7 @@ using namespace Gdiplus;
 #include "Core\BUIWindow.h"
 
 #include "Render\BRenderEngineDef.h"
+#include "Render\BRenderEngineAssist.h"
 #include "Render\BRenderEngineGdiPlus.h"
 #include "Render\BRenderEngineManager.h"
 
