@@ -101,9 +101,9 @@ namespace BUI {
 			if (!::IntersectRect(&rcTemp, &rcPaint, &pWidget->GetPos())) 
 				continue;
 
-			if (!::IntersectRect(&rcTemp, &GetPos(), &pWidget->GetPos())) 
+			if (!::IntersectRect(&rcTemp, &m_rcItem, &pWidget->GetPos())) 
 				continue;
-			
+
 			pWidget->DoPaint(hDC, rcPaint);
 		}
 	}
@@ -151,7 +151,7 @@ namespace BUI {
 			!::PtInRect(&m_rcItem, * static_cast<LPPOINT>(pData))) 
 			return widget;
 
-		for (int index = 0; index < m_itemWidget.size(); index++)
+		for (unsigned int index = 0; index < m_itemWidget.size(); index++)
 		{
 			BUIWidget* pResult = static_cast<BUIWidget*>(m_itemWidget[index])->FindControl(Proc, pData, uFlags);
 			if (pResult != NULL)

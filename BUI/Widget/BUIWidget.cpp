@@ -290,7 +290,15 @@ namespace BUI{
 		{
 			bstring filePath = BApplication::GetInstance()->GetApplicationPath();
 			filePath += m_imageFileName;
-			BRenderEngineManager::GetInstance()->RenderEngine()->DrawImage(hDC, filePath.c_str(), m_rcItem, m_rcPaint);
+			ImageDescription imageDesc;
+			imageDesc.imageFile = filePath;
+			imageDesc.rcSrc = m_rcItem;
+			imageDesc.rcPaint = m_rcPaint;
+			imageDesc.bScale = 1;
+			imageDesc.rcCorner.left = imageDesc.rcCorner.right = m_borderRound.cx;
+			imageDesc.rcCorner.top = imageDesc.rcCorner.bottom = m_borderRound.cy;
+			BRenderEngineManager::GetInstance()->RenderEngine()->DrawImage(hDC, imageDesc);
+			// BRenderEngineManager::GetInstance()->RenderEngine()->DrawImage(hDC, filePath.c_str(), m_rcItem, m_rcPaint);
 		}
 	}
 

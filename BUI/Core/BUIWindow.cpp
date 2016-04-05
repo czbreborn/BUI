@@ -89,7 +89,7 @@ namespace BUI{
 	{
 		LONG style = GetWindowLong(m_hwnd, GWL_STYLE);
 		style &= ~WS_CAPTION;
-		SetWindowLong(m_hwnd, GWL_STYLE, style); //去标题栏
+		SetWindowLong(m_hwnd, GWL_STYLE, style | WS_CLIPCHILDREN); //去标题栏
 		
 		LONG exStyle = GetWindowLong(m_hwnd, GWL_EXSTYLE);
 		exStyle &= ~(WS_EX_WINDOWEDGE | WS_EX_DLGMODALFRAME);

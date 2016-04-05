@@ -111,7 +111,9 @@ namespace BUI{
 		Pen pen(penColor, size);
 		pen.SetDashStyle(convertStyle(style));
 
-		Graphics grap(hdc);
+		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
+		assert(canvas);
+		Graphics grap(canvas->GetCanvas());
 		Gdiplus::PointF startPF(startP.x, startP.y);
 		Gdiplus::PointF endPF(endP.x, endP.y);
 		grap.SetSmoothingMode(SmoothingModeAntiAlias);
@@ -123,7 +125,9 @@ namespace BUI{
 		Pen pen(penColor, size);
 		pen.SetDashStyle(convertStyle(style));
 
-		Graphics grap(hdc);
+		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
+		assert(canvas);
+		Graphics grap(canvas->GetCanvas());
 		Gdiplus::RectF rect(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 		grap.SetSmoothingMode(SmoothingModeAntiAlias);
 		grap.DrawRectangle(&pen, rect);
@@ -148,7 +152,9 @@ namespace BUI{
 		pen.SetDashStyle(convertStyle(style));
 
 		GraphicsPath* pPath = genRoundRectPath(rc, width, height);
-		Graphics grap(hdc);
+		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
+		assert(canvas);
+		Graphics grap(canvas->GetCanvas());
 		grap.SetSmoothingMode(SmoothingModeAntiAlias);
 		grap.DrawPath(&pen, pPath);
 		delete pPath;
@@ -165,9 +171,10 @@ namespace BUI{
 		stringFormat.SetLineAlignment(convertLineAlignment(textDesc.align));
 		stringFormat.SetFormatFlags(textDesc.formatFlags);
 
-		Graphics grap(hdc);
+		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
+		assert(canvas);
+		Graphics grap(canvas->GetCanvas());
 		grap.SetSmoothingMode(SmoothingModeAntiAlias);
-		grap.SetInterpolationMode(InterpolationModeHighQualityBicubic);
 		grap.SetTextRenderingHint(TextRenderingHintAntiAlias);
 		RectF rcf(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 		GraphicsPath path;
@@ -235,20 +242,34 @@ namespace BUI{
 		grap.DrawPath(&pen, &path);
 	}
 
-	void BRenderEngineGdiPlus::DrawImage(HDC hdc, LPCTSTR lpstrFileName, const RECT& rcDst, const RECT& rcPaint)
+	void BRenderEngineGdiPlus::DrawImage(HDC hdc, const ImageDescription& imageDesc)
 	{
-		Image image(lpstrFileName);
+		Image image(imageDesc.imageFile.c_str());
+		Image* realImage = NULL;
+		if (imageDesc.bScale)
+		{
+			SIZE szImage = {imageDesc.rcSrc.right - imageDesc.rcSrc.left, imageDesc.rcSrc.bottom - imageDesc.rcSrc.top};
+			realImage = BRenderEngineAssist::genScaleImage(imageDesc.imageFile.c_str(), szImage, imageDesc.rcCorner);
+		}
+		else
+		{
+			realImage = image.Clone();
+		}
 
-		Graphics grap(hdc);
-		Gdiplus::RectF rcfDst(rcPaint.left, rcPaint.top, rcPaint.right - rcPaint.left, rcPaint.bottom - rcPaint.top);
-		rcfDst.Width = min(image.GetWidth(), rcfDst.Width);
-		rcfDst.Height = min(image.GetHeight(), rcfDst.Height);
+		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
+		assert(canvas);
+		Graphics grap(canvas->GetCanvas());
 
-		Gdiplus::RectF rcfPaint(rcPaint.left, rcPaint.top, rcPaint.right - rcPaint.left, rcPaint.bottom - rcPaint.top);
-		Gdiplus::RectF rcfImage(rcDst.left, rcDst.top, rcDst.left + image.GetWidth(), rcDst.top + image.GetHeight());
+		Gdiplus::RectF rcfDst(imageDesc.rcPaint.left, imageDesc.rcPaint.top, imageDesc.rcPaint.right - imageDesc.rcPaint.left, imageDesc.rcPaint.bottom - imageDesc.rcPaint.top);
+		rcfDst.Width = min(realImage->GetWidth(), rcfDst.Width);
+		rcfDst.Height = min(realImage->GetHeight(), rcfDst.Height);
+
+		Gdiplus::RectF rcfPaint(imageDesc.rcPaint.left, imageDesc.rcPaint.top, imageDesc.rcPaint.right - imageDesc.rcPaint.left, imageDesc.rcPaint.bottom - imageDesc.rcPaint.top);
+		Gdiplus::RectF rcfImage(imageDesc.rcSrc.left, imageDesc.rcSrc.top, imageDesc.rcSrc.left + realImage->GetWidth(), imageDesc.rcSrc.top + realImage->GetHeight());
 		rcfPaint.Intersect(rcfImage);
 		rcfDst.Intersect(rcfImage);
-		grap.DrawImage(&image, rcfDst, rcfPaint.GetLeft() - rcfImage.GetLeft(), rcfPaint.GetTop() - rcfImage.GetTop(), rcfPaint.GetRight() - rcfPaint.GetLeft(), rcfPaint.GetBottom() - rcfPaint.GetTop(), UnitPixel);
+		grap.DrawImage(realImage, rcfDst, rcfPaint.GetLeft() - rcfImage.GetLeft(), rcfPaint.GetTop() - rcfImage.GetTop(), rcfPaint.GetRight() - rcfPaint.GetLeft(), rcfPaint.GetBottom() - rcfPaint.GetTop(), UnitPixel);
+		delete realImage;
 	}
 
 	void BRenderEngineGdiPlus::DrawGradient(HDC hdc, const RECT& rc, DWORD dwColor1, DWORD dwColor2)
@@ -262,7 +283,9 @@ namespace BUI{
 			dwColor2
 			);
 
-		Graphics grap(hdc);
+		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
+		assert(canvas);
+		Graphics grap(canvas->GetCanvas());
 		Gdiplus::Rect rect(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 		grap.FillRectangle(&linGrBrush, rect);
 	}
@@ -278,7 +301,9 @@ namespace BUI{
 			dwColor2
 			);
 
-		Graphics grap(hdc);
+		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
+		assert(canvas);
+		Graphics grap(canvas->GetCanvas());
 		GraphicsPath* pPath = genRoundRectPath(rc, width, height);
 		grap.FillPath(&linGrBrush, pPath);
 	}
@@ -309,5 +334,14 @@ namespace BUI{
 		ReleaseDC(hwnd, hdc);
 
 		return ret != 0;
+	}
+
+	void BRenderEngineGdiPlus::DrawCanvas(BCanvas* canvas, const RECT& rc)
+	{
+		HDC dc = canvas->GetDC();
+		Graphics grap(dc);
+		CachedBitmap cacheBmp(canvas->GetCanvas(), &grap);
+		grap.SetClip(Rect(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top));
+		grap.DrawCachedBitmap(&cacheBmp, 0, 0);
 	}
 }

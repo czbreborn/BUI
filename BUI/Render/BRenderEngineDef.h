@@ -33,7 +33,7 @@ namespace BUI{
 	#define ALIGNMENTMIDDLE (textalignment_center | textalignment_vcenter)
 	#define ALIGNMENTLEFTTOP (textalignment_left | textalignment_top)
 
-	typedef struct TEXTDESCRIPTION
+	typedef struct tagTextDescription
 	{
 		bstring content;
 		DWORD textColor;
@@ -50,6 +50,23 @@ namespace BUI{
 		DWORD doubleColor;		// 描边的双边颜色
 	} TextDescription;
 
+	typedef struct tagImageDescription
+	{
+		tagImageDescription()
+		{
+			ZeroMemory(&rcSrc, sizeof(RECT));
+			ZeroMemory(&rcCorner, sizeof(RECT));
+			ZeroMemory(&rcPaint, sizeof(RECT));
+			bScale = 0;
+		}
+		bstring imageFile;		// 图像文件名
+		RECT rcSrc;				// 图像所属区域
+		RECT rcCorner;			// 图像边角大小
+		RECT rcPaint;			// 绘制的区域
+		bool bScale;			// 是否缩放
+	} ImageDescription;
+
+	class BCanvas;
 	class BIRenderEngine
 	{
 	public:
@@ -61,11 +78,12 @@ namespace BUI{
 		virtual void DrawRect(HDC hdc, const RECT& rc, RECT borderSize, DWORD penColor, int style = penstyle_solid) = 0;
 		virtual void DrawRoundRect(HDC hdc, const RECT& rc, int size, int width, int height, DWORD penColor, int style = penstyle_solid) = 0;
 		virtual void DrawText(HDC hdc, const RECT& rc, const TextDescription& textDesc) = 0;
-		virtual void DrawImage(HDC hdc, LPCTSTR lpstrFileName, const RECT& rcDst, const RECT& rcPaint) = 0;
+		virtual void DrawImage(HDC hdc, const ImageDescription& imageDesc) = 0;
 		virtual void DrawGradient(HDC hdc, const RECT& rc, DWORD dwColor1, DWORD dwColor2) = 0;
 		virtual void DrawRoundGradient(HDC hdc, const RECT& rc, int width, int height, DWORD dwColor1, DWORD dwColor2) = 0;
 		virtual bool DrawWindowRgn(HWND hwnd, const RECT& rc) = 0;
 		virtual bool DrawWindowRoundRgn(HWND hwnd, const RECT& rc, int width, int height) = 0;
+		virtual void DrawCanvas(BCanvas* canvas, const RECT& rc) = 0;
 	};
 }
 

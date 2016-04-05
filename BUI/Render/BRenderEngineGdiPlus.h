@@ -19,12 +19,13 @@ namespace BUI{
 		virtual void DrawRect(HDC hdc, const RECT& rc, RECT borderSize, DWORD penColor, int style = penstyle_solid);
 		virtual void DrawRoundRect(HDC hdc, const RECT& rc, int size, int width, int height, DWORD penColor, int style = penstyle_solid);
 		virtual void DrawText(HDC hdc, const RECT& rc, const TextDescription& textDesc);
-		virtual void DrawImage(HDC hdc, LPCTSTR lpstrFileName, const RECT& rcDst, const RECT& rcPaint);
+		virtual void DrawImage(HDC hdc, const ImageDescription& imageDesc);
 		virtual void DrawGradient(HDC hdc, const RECT& rc, DWORD dwColor1, DWORD dwColor2);
 		virtual void DrawRoundGradient(HDC hdc, const RECT& rc, int width, int height, DWORD dwColor1, DWORD dwColor2);
 		
 		virtual bool DrawWindowRgn(HWND hwnd, const RECT& rc);
 		virtual bool DrawWindowRoundRgn(HWND hwnd, const RECT& rc, int width, int height);
+		virtual void DrawCanvas(BCanvas* canvas, const RECT& rc);
 
 	private:
 		void init();

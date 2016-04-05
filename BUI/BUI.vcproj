@@ -227,6 +227,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Widget\BUIScrollBar.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Widget\BUIWidget.cpp"
 					>
 				</File>
@@ -263,6 +267,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Utils\BUIAttributeParser.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\Utils\BUIMarkup.cpp"
 					>
 				</File>
@@ -274,6 +282,10 @@
 			<Filter
 				Name="Render"
 				>
+				<File
+					RelativePath=".\Render\BRenderCanvas.cpp"
+					>
+				</File>
 				<File
 					RelativePath=".\Render\BRenderEngineAssist.cpp"
 					>
@@ -345,6 +357,10 @@
 				Name="Render"
 				>
 				<File
+					RelativePath=".\Render\BRenderCanvas.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Render\BRenderEngineAssist.h"
 					>
 				</File>
@@ -377,6 +393,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Utils\BUIAttributeParser.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Utils\BUIMarkup.h"
 					>
 				</File>
@@ -402,6 +422,10 @@
 				</File>
 				<File
 					RelativePath=".\Widget\BUIPanel.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Widget\BUIScrollBar.h"
 					>
 				</File>
 				<File

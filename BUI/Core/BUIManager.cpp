@@ -139,12 +139,11 @@ namespace BUI{
 		BeginPaint(m_hWndPaint, &ps);
 		if (m_rootWidget != NULL)
 		{
+			RECT rcClient = { 0 };
+			::GetClientRect(m_hWndPaint, &rcClient);
 			if (m_bResizeNeeded)
 			{
 				m_bResizeNeeded = false;
-				RECT rcClient = { 0 };
-				::GetClientRect(m_hWndPaint, &rcClient);
-
 				m_rootWidget->SetPos(rcClient);
 			}
 			
@@ -154,8 +153,16 @@ namespace BUI{
 				RECT rootRc = m_rootWidget->GetPos();
 				BRenderEngineManager::GetInstance()->RenderEngine()->DrawWindowRoundRgn(m_hWndPaint, rootRc, szxy.cx, szxy.cy);
 			}
+			
+			// 创建画布，基于画布绘制
+			BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(m_hdcPaint);;
+			if (canvas == NULL)
+				canvas = BRenderCanvas::GetInstance()->GenDCCanvas(m_hdcPaint, rcClient);
+			assert(canvas);
 
-			m_rootWidget->Paint(m_hdcPaint, ps.rcPaint/*rcClient*/);
+			m_rootWidget->Paint(m_hdcPaint, ps.rcPaint);
+			// 绘制画布到整个窗口
+			BRenderEngineManager::GetInstance()->RenderEngine()->DrawCanvas(canvas, ps.rcPaint);
 		}
 		EndPaint(m_hWndPaint, &ps);
 

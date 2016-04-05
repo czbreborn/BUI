@@ -196,6 +196,12 @@ namespace BUI{
 			filePath += m_normalImage;	
 		}
 
-		BRenderEngineManager::GetInstance()->RenderEngine()->DrawImage(hDC, filePath.c_str(), m_rcItem, m_rcPaint);
+		ImageDescription imageDesc;
+		imageDesc.imageFile = filePath;
+		imageDesc.rcSrc = m_rcItem;
+		imageDesc.rcPaint = m_rcPaint;
+		imageDesc.bScale = 0;
+		BRenderEngineManager::GetInstance()->RenderEngine()->DrawImage(hDC, imageDesc);
+		// BRenderEngineManager::GetInstance()->RenderEngine()->DrawImage(hDC, filePath.c_str(), m_rcItem, m_rcPaint);
 	}
 }

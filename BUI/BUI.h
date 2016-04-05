@@ -48,6 +48,7 @@ using namespace Gdiplus;
 #include "Utils\BSingleton.h"
 #include "Utils\BUIAssist.h"
 #include "Utils\BUIMarkup.h"
+#include "Utils\BUIAttributeParser.h"
 
 #include "Core\BApplication.h"
 #include "Core\BMsgDef.h"
@@ -59,6 +60,7 @@ using namespace Gdiplus;
 
 #include "Render\BRenderEngineDef.h"
 #include "Render\BRenderEngineAssist.h"
+#include "Render\BRenderCanvas.h"
 #include "Render\BRenderEngineGdiPlus.h"
 #include "Render\BRenderEngineManager.h"
 
@@ -67,6 +69,7 @@ using namespace Gdiplus;
 #include "Widget\BUILabel.h"
 #include "Widget\BUIButton.h"
 #include "Widget\BUIEdit.h"
+#include "Widget\BUIScrollBar.h"
 #include "Widget\BUIContainer.h"
 #include "Widget\BUIHorizontalLayout.h"
 #include "Widget\BUIVerticalLayout.h"
