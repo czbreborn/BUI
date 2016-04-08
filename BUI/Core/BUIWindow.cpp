@@ -71,13 +71,13 @@ namespace BUI{
 			WINMsgFunction func = static_cast<WINMsgFunction>(it->second);
 			return (this->*func)(uMsg, wParam, lParam);
 		}
-
+		
 		return -1;
 	}
 
 	UINT BUIWindow::GetClassStyle() const
 	{
-		return CS_HREDRAW | CS_VREDRAW;;
+		return 0;//CS_HREDRAW | CS_VREDRAW;;
 	}
 
 	LRESULT BUIWindow::MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam)

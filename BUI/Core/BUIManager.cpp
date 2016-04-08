@@ -34,11 +34,16 @@ namespace BUI{
 		WMPROCBIND(WM_SETCURSOR, BUIManager::OnSetCursor);
 		WMPROCBIND(WM_COMMAND, BUIManager::OnCommand);
 		WMPROCBIND(WM_SIZE, BUIManager::OnSize);
+		WMPROCBIND(WM_GETMINMAXINFO, BUIManager::OnGetMinMaxInfo);
+
+		m_szMinWindow.cx = m_szMinWindow.cy = 0;
+		m_szMaxWindow.cx = m_szMaxWindow.cy = 0;
 	}
 
 
 	BUIManager::~BUIManager()
 	{
+		ReleaseDC(m_hWndPaint, m_hdcPaint);
 	}
 
 	void BUIManager::Init(HWND hwnd, LPCTSTR name/* = NULL*/)
@@ -46,7 +51,7 @@ namespace BUI{
 		if (m_name.empty())
 			m_name = name;
 
-		if (m_hWndPaint != hwnd)
+		if (m_hWndPaint != hwnd)	
 		{
 			m_hWndPaint = hwnd;
 			m_hdcPaint = GetDC(hwnd);
@@ -105,14 +110,39 @@ namespace BUI{
 
 	}
 
-	LRESULT BUIManager::MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam)
+	SIZE BUIManager::GetMinInfo() const
 	{
-		LRESULT res = -1;
+		return m_szMinWindow;
+	}
+
+	void BUIManager::SetMinInfo(int cx, int cy)
+	{
+		m_szMinWindow.cx = cx;
+		m_szMinWindow.cy = cy;
+	}
+
+	SIZE BUIManager::GetMaxInfo() const
+	{
+		return m_szMaxWindow;
+	}
+
+	void BUIManager::SetMaxInfo(int cx, int cy)
+	{
+		m_szMaxWindow.cx = cx;
+		m_szMaxWindow.cy = cy;
+	}
+
+	bool BUIManager::MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes)
+	{
 		WMPROCMAPIT it = s_wmProcMap.find(uMsg);
 		if (it != s_wmProcMap.end())
 		{
 			WMPROC proc = static_cast<WMPROC>(it->second);
-			res = (this->*proc)(wParam, lParam);
+			lRes = (this->*proc)(wParam, lParam);
+			if (lRes != -1)
+				return true;
+			else
+				return false;
 		}
 
 		std::wstringstream ss;
@@ -122,12 +152,12 @@ namespace BUI{
 		ss << _T("\n");
 		::OutputDebugString(ss.str().c_str());
 
-		return res;
+		return false;
 	}
 
 	LRESULT BUIManager::OnEraseBkgnd(WPARAM wParam, LPARAM lParam)
 	{
-		return 1;
+		return 0;
 	}
 
 	LRESULT BUIManager::OnPaint(WPARAM wParam, LPARAM lParam)	
@@ -155,11 +185,10 @@ namespace BUI{
 			}
 			
 			// 创建画布，基于画布绘制
-			BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(m_hdcPaint);;
+			BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(m_hdcPaint);
 			if (canvas == NULL)
 				canvas = BRenderCanvas::GetInstance()->GenDCCanvas(m_hdcPaint, rcClient);
 			assert(canvas);
-
 			m_rootWidget->Paint(m_hdcPaint, ps.rcPaint);
 			// 绘制画布到整个窗口
 			BRenderEngineManager::GetInstance()->RenderEngine()->DrawCanvas(canvas, ps.rcPaint);
@@ -281,7 +310,23 @@ namespace BUI{
 	LRESULT BUIManager::OnSize(WPARAM wParam, LPARAM lParam)
 	{
 		m_bResizeNeeded = true;
+
 		return 0;
+	}
+
+
+	LRESULT BUIManager::OnGetMinMaxInfo(WPARAM wParam, LPARAM lParam)
+	{
+		LPMINMAXINFO lpMMI = (LPMINMAXINFO) lParam;
+		if (m_szMinWindow.cx > 0) 
+			lpMMI->ptMinTrackSize.x = m_szMinWindow.cx;
+		if (m_szMinWindow.cy > 0)
+			lpMMI->ptMinTrackSize.y = m_szMinWindow.cy;
+		if (m_szMaxWindow.cx > 0)
+			lpMMI->ptMaxTrackSize.x = m_szMaxWindow.cx;
+		if (m_szMaxWindow.cy > 0)
+			lpMMI->ptMaxTrackSize.y = m_szMaxWindow.cy;
+		return 1;
 	}
 
 	BUIWidget* BUIManager::FindControl(POINT pt) const
