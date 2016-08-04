@@ -14,8 +14,7 @@ public:
 		if (ret != -1)
 			return ret;
 
-		ret = m_pUIManager->MessageRouting(uMsg, wParam, lParam);
-		if (ret != -1)
+		if (m_pUIManager->MessageRouting(uMsg, wParam, lParam, ret))
 			return ret;
 
 		return BUIWindow::MessageRouting(uMsg, wParam, lParam);

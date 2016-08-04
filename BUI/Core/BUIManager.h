@@ -35,11 +35,16 @@ namespace BUI{
 		SIZE GetRoundCorner() const;
 		void SetRoundCorner(int cx, int cy);
 
+		SIZE GetMinInfo() const;
+		void SetMinInfo(int cx, int cy);
+		SIZE GetMaxInfo() const;
+		void SetMaxInfo(int cx, int cy);
+
 		BUIWidget* FindControl(POINT pt) const;
 		BUIWidget* FindControl(LPCTSTR pstrName);
 
 	public:
-		LRESULT MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam);
+		 bool MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes);
 
 	protected:
 		LRESULT OnEraseBkgnd(WPARAM wParam, LPARAM lParam);
@@ -60,6 +65,7 @@ namespace BUI{
 
 		LRESULT OnCommand(WPARAM wParam, LPARAM lParam);
 		LRESULT OnSize(WPARAM wParam, LPARAM lParam);
+		LRESULT OnGetMinMaxInfo(WPARAM wParam, LPARAM lParam);
 
 	private:
 		static WMPROCMAP s_wmProcMap;
@@ -70,6 +76,9 @@ namespace BUI{
 
 		bool m_bUpdateNeeded;
 		bool m_bResizeNeeded;
+
+		SIZE m_szMinWindow;
+		SIZE m_szMaxWindow;
 
 		BUIWidget* m_rootWidget;
 		BUIWidget* m_focusedWidget;
