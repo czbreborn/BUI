@@ -76,8 +76,8 @@ class BUIWidget;
 
 	// 控件类型定义
 	#define DEFINE_WIDGETTYPE(classtype)				\
-		LPCTSTR GetType() const;						\
-		LPVOID GetInterface(LPCTSTR name);
+		LPCTSTR GetType() const;				\
+		LPVOID GetInterface(LPCTSTR name);				
 
 	#define IMPLEMENT_WIDGETTYPE(classtype, baseclass)	\
 		class baseclass;								\
@@ -87,7 +87,7 @@ class BUIWidget;
 		}												\
 		LPVOID classtype::GetInterface(LPCTSTR name)	\
 		{												\
-			bstring strType = GetType();				\
+			bstring strType = classtype::GetType();				\
 			if (strType.length() > 3)					\
 			if (_tcscmp(name, strType.c_str() + 3) == 0)\
 				return static_cast<classtype*>(this);	\
@@ -108,7 +108,7 @@ class BUIWidget;
 			}	\
 
 	#define REGISTER_CREATEWIDGET(classtype)	\
-		BUIWidgetFactory::RegisterCreateWidget(_T(#classtype), classtype::Create##classtype);
+		BUIWidgetFactory::RegisterCreateWidget(_T(#classtype), classtype::Create##classtype)
 
 	
 }

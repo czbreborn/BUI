@@ -30,8 +30,10 @@ using namespace std;
 
 #ifdef UNICODE
 #define bstring wstring
+#define bstringstream wstringstream
 #else
 #define bstring string
+#define bstringstream stringstream
 #endif
 
 // äÖÈ¾ÒıÇægdiplus

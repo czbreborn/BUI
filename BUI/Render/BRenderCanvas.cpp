@@ -10,7 +10,7 @@ namespace BUI {
 
 	BCanvas::~BCanvas()
 	{
-		delete m_bmp;
+		//delete m_bmp;
 	}
 
 	HDC	BCanvas::GetDC()

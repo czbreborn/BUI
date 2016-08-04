@@ -12,7 +12,8 @@ namespace BUI{
 		MSGBIND(WM_QUIT, BUIWindow::OnQuit);
 		MSGBIND(WM_NCCALCSIZE, BUIWindow::OnNcCalcSize);
 		MSGBIND(WM_NCPAINT, BUIWindow::OnNcPaint);
-		MSGBIND(WM_NCACTIVATE, BUIWindow::OnNcPaint);
+		MSGBIND(WM_NCACTIVATE, BUIWindow::OnNcActivate);
+		MSGBIND(WM_NCHITTEST, BUIWindow::OnNcHitTest);
 	}
 
 	BUIWindow::~BUIWindow()
@@ -132,24 +133,69 @@ namespace BUI{
 		return 0;
 	}
 
+	LRESULT BUIWindow::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		POINT pt = {GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+		::ScreenToClient(m_hwnd, &pt);
+
+		RECT rcClient;
+		::GetClientRect(m_hwnd, &rcClient);
+		
+		if (m_pUIManager) {
+			if (!::IsZoomed(m_hwnd)) {
+				RECT rcSizeBox = m_pUIManager->GetSizeBox();
+				if (pt.y < rcClient.top + rcSizeBox.top) {
+					if (pt.x < rcClient.left + rcSizeBox.left) 
+						return HTTOPLEFT;
+
+					if (pt.x > rcClient.right - rcSizeBox.right)
+						return HTTOPRIGHT;
+
+					return HTTOP;
+				} else if (pt.y > rcClient.bottom - rcSizeBox.bottom) {
+					if (pt.x < rcClient.left + rcSizeBox.left) 
+						return HTBOTTOMLEFT;
+
+					if (pt.x > rcClient.right - rcSizeBox.right)
+						return HTBOTTOMRIGHT;
+
+					return HTBOTTOM;
+				} else {
+					if (pt.x < rcClient.left + rcSizeBox.left) 
+						return HTLEFT;
+
+					if (pt.x > rcClient.right - rcSizeBox.right)
+						return HTRIGHT;
+				}
+			}
+
+			RECT rcCaption = m_pUIManager->GetCaptionRect();
+			if (pt.x >= rcClient.left + rcCaption.left && 
+				pt.x < rcClient.right - rcCaption.right &&
+				pt.y > rcCaption.top && pt.y < rcCaption.bottom) {
+				BUIWidget* pWidget = static_cast<BUIWidget*>(m_pUIManager->FindControl(pt));
+				if (pWidget) {
+					bstring widgetType = pWidget->GetType();
+					if (widgetType.compare(BUI_WIN_BUTTON) != 0) {
+						return HTCAPTION;
+					}
+				}
+			}
+		}
+
+		return HTCLIENT;
+	}
+
 	LRESULT CALLBACK BUIWindow::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
-		/*static BUIWindow* pThis;
-		if (uMsg == WM_NCCREATE)
-		{
-			LPCREATESTRUCT lpcs = reinterpret_cast<LPCREATESTRUCT>(lParam);
-			pThis = static_cast<BUIWindow*>(lpcs->lpCreateParams);
-			pThis->m_hwnd = hwnd;
-		}*/
 
 		BUIWindow* pThis = NULL;
-		if( uMsg == WM_NCCREATE ) {
+		if (uMsg == WM_NCCREATE) {
 			LPCREATESTRUCT lpcs = reinterpret_cast<LPCREATESTRUCT>(lParam);
 			pThis = static_cast<BUIWindow*>(lpcs->lpCreateParams);
 			::SetProp(hwnd, _T("WndX"), (HANDLE) pThis);
 			pThis->m_hwnd = hwnd;
-		} 
-		else {
+		} else {
 			pThis = reinterpret_cast<BUIWindow*>(::GetProp(hwnd, _T("WndX")));
 			if( uMsg == WM_NCDESTROY && pThis != NULL ) {
 				LRESULT lRes = ::DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -159,8 +205,7 @@ namespace BUI{
 			}
 		}
 
-		if (pThis != NULL)
-		{
+		if (pThis != NULL) {
 			LRESULT ret = pThis->MessageRouting(uMsg, wParam, lParam);
 			return ret;
 		}

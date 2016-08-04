@@ -7,9 +7,9 @@ namespace BUI{
 	BUILabel::BUILabel()
 	{
 		memset(&m_textDesc, 0, sizeof(TextDescription));
-		m_textDesc.textColor = -1;
-		m_textDesc.textColor1 = -1;
-		m_textDesc.fontSize = 12;
+		m_textDesc.textColor = customcolor_black;
+		m_textDesc.textColor1 = customcolor_black;
+		m_textDesc.fontSize = 14;
 		m_textDesc.style = FontStyleRegular;
 		m_textDesc.align = ALIGNMENTMIDDLE;
 		m_textDesc.formatFlags = StringFormatFlagsNoWrap;

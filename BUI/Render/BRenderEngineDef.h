@@ -30,6 +30,15 @@ namespace BUI{
 		textalignment_vcenter = 0x20,	 // 16
 		textalignment_bottom = 0x40,	 // 32        
 	};
+
+	enum CUSTOMCOLOR {
+		customcolor_black = 0xff000000,
+		customcolor_white = 0xffffffff,
+		customcolor_red = 0xffff0000,
+		customcolor_green = 0xff00ff00,
+		customcolor_blue = 0xff0000ff,
+
+	};
 	#define ALIGNMENTMIDDLE (textalignment_center | textalignment_vcenter)
 	#define ALIGNMENTLEFTTOP (textalignment_left | textalignment_top)
 
@@ -57,7 +66,7 @@ namespace BUI{
 			ZeroMemory(&rcSrc, sizeof(RECT));
 			ZeroMemory(&rcCorner, sizeof(RECT));
 			ZeroMemory(&rcPaint, sizeof(RECT));
-			bScale = 0;
+			bScale = true;
 		}
 		bstring imageFile;		// 图像文件名
 		RECT rcSrc;				// 图像所属区域

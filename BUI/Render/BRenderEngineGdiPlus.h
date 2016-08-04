@@ -37,6 +37,10 @@ namespace BUI{
 		StringAlignment convertLineAlignment(UINT align);
 		GraphicsPath* genRoundRectPath(const RECT& rc, int width, int height);
 
+		// ªÊ÷∆Ãÿ ‚Œƒ◊÷
+		void drawGlowText(Graphics& grap, const RECT& rc, const TextDescription& textDesc);
+		void drawStrokeText(Graphics& grap, const RECT& rc, const TextDescription& textDesc);
+
 	private:
 		ULONG_PTR m_uGdiPlus;
 

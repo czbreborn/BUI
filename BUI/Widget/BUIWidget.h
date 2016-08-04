@@ -20,7 +20,7 @@ namespace BUI {
 		virtual bstring GetName();
 		virtual void SetName(LPCTSTR name);
 
-		virtual LPCTSTR GetType();
+		virtual LPCTSTR GetType() const;
 		virtual LPVOID GetInterface(LPCTSTR name);
 
 		// 文本相关

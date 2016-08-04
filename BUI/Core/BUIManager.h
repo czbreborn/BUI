@@ -28,6 +28,16 @@ namespace BUI{
 		BUIWidget* GetFocus() const;
 		void SetFocus(BUIWidget* widget);
 
+		RECT& GetSizeBox();
+		void SetSizeBox(const RECT& rcSizeBox);
+		RECT& GetCaptionRect();
+		void SetCaptionRect(const RECT& rcCaption);
+		SIZE GetRoundCorner() const;
+		void SetRoundCorner(int cx, int cy);
+
+		BUIWidget* FindControl(POINT pt) const;
+		BUIWidget* FindControl(LPCTSTR pstrName);
+
 	public:
 		LRESULT MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -52,10 +62,6 @@ namespace BUI{
 		LRESULT OnSize(WPARAM wParam, LPARAM lParam);
 
 	private:
-		BUIWidget* FindControl(POINT pt) const;
-		BUIWidget* FindControl(LPCTSTR pstrName);
-
-	private:
 		static WMPROCMAP s_wmProcMap;
 
 		HWND m_hWndPaint;
@@ -68,6 +74,11 @@ namespace BUI{
 		BUIWidget* m_rootWidget;
 		BUIWidget* m_focusedWidget;
 		BUIWidget* m_eventClickWidget;
+
+		SIZE m_szInitWindowSize;
+		RECT m_rcSizeBox;
+		RECT m_rcCaption;
+		SIZE m_szRoundCorner;
 	};
 }
 

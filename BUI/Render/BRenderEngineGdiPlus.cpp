@@ -106,6 +106,88 @@ namespace BUI{
 		return pPath;
 	}
 
+	void BRenderEngineGdiPlus::drawGlowText(Graphics& grap, const RECT& rc, const TextDescription& textDesc)
+	{
+		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
+		if (!textDesc.fontFamily.empty())
+			strfamily = textDesc.fontFamily;
+		FontFamily fontFamily(strfamily.c_str());
+		StringFormat stringFormat;
+		stringFormat.SetAlignment(convertAlignment(textDesc.align));
+		stringFormat.SetLineAlignment(convertLineAlignment(textDesc.align));
+		stringFormat.SetFormatFlags(textDesc.formatFlags);
+
+		RectF rcf(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
+		GraphicsPath path;
+		path.AddString(textDesc.content.c_str(), textDesc.content.length(), &fontFamily, textDesc.style, textDesc.fontSize, rcf, &stringFormat);
+
+		for (int i = 1; i < 8; i++)
+		{
+			Pen pen(textDesc.glowColor, i);
+			pen.SetLineJoin(LineJoinRound);
+			grap.DrawPath(&pen, &path);
+		}
+
+		DWORD dwColor1 = textDesc.textColor;
+		DWORD dwColor2 = textDesc.textColor1;
+		if (dwColor2 == 0)
+			dwColor2 = dwColor1;
+		Gdiplus::LinearGradientBrush linGrBrush(
+			Gdiplus::PointF(rc.left, rc.top),
+			Gdiplus::PointF(rc.right, rc.bottom),
+			dwColor1,
+			dwColor2
+			);
+
+		grap.FillPath(&linGrBrush, &path);
+	}
+
+	void BRenderEngineGdiPlus::drawStrokeText(Graphics& grap, const RECT& rc, const TextDescription& textDesc)
+	{
+		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
+		if (!textDesc.fontFamily.empty())
+			strfamily = textDesc.fontFamily;
+		FontFamily fontFamily(strfamily.c_str());
+		StringFormat stringFormat;
+		stringFormat.SetAlignment(convertAlignment(textDesc.align));
+		stringFormat.SetLineAlignment(convertLineAlignment(textDesc.align));
+		stringFormat.SetFormatFlags(textDesc.formatFlags);
+
+		RectF rcf(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
+		GraphicsPath path;
+		path.AddString(textDesc.content.c_str(), textDesc.content.length(), &fontFamily, textDesc.style, textDesc.fontSize, rcf, &stringFormat);
+
+		if (textDesc.doubleColor > 0)
+		{
+			Pen pen(textDesc.doubleColor, 4);
+			pen.SetLineJoin(LineJoinRound);
+			grap.DrawPath(&pen, &path);
+		}
+
+		if (textDesc.singleColor > 0)
+		{
+			Pen pen(textDesc.singleColor, 2);
+			pen.SetLineJoin(LineJoinRound);
+			grap.DrawPath(&pen, &path);
+		}
+
+		Pen pen(textDesc.textColor);
+		grap.DrawPath(&pen, &path);
+
+		DWORD dwColor1 = textDesc.textColor;
+		DWORD dwColor2 = textDesc.textColor1;
+		if (dwColor2 == 0)
+			dwColor2 = dwColor1;
+		Gdiplus::LinearGradientBrush linGrBrush(
+			Gdiplus::PointF(rc.left, rc.top),
+			Gdiplus::PointF(rc.right, rc.bottom),
+			dwColor1,
+			dwColor2
+			);
+
+		grap.FillPath(&linGrBrush, &path);
+	}
+
 	void BRenderEngineGdiPlus::DrawLine(HDC hdc, const POINT& startP, const POINT& endP, int size, DWORD penColor, int style/* = penstyle_solid*/)
 	{
 		Pen pen(penColor, size);
@@ -162,7 +244,24 @@ namespace BUI{
 
 	void BRenderEngineGdiPlus::DrawText(HDC hdc, const RECT& rc, const TextDescription& textDesc)
 	{
-		bstring strfamily(_T("Arial"));
+		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
+		assert(canvas);
+		Graphics grap(canvas->GetCanvas());
+		grap.SetSmoothingMode(SmoothingModeAntiAlias);
+		grap.SetTextRenderingHint(TextRenderingHintAntiAlias);
+		if (textDesc.bGlow)
+		{
+			drawGlowText(grap, rc, textDesc);
+			return;
+		}
+
+		if (textDesc.bStroke)
+		{
+			drawStrokeText(grap, rc, textDesc);
+			return;
+		}
+
+		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
 		if (!textDesc.fontFamily.empty())
 			strfamily = textDesc.fontFamily;
 		FontFamily fontFamily(strfamily.c_str());
@@ -171,75 +270,10 @@ namespace BUI{
 		stringFormat.SetLineAlignment(convertLineAlignment(textDesc.align));
 		stringFormat.SetFormatFlags(textDesc.formatFlags);
 
-		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
-		assert(canvas);
-		Graphics grap(canvas->GetCanvas());
-		grap.SetSmoothingMode(SmoothingModeAntiAlias);
-		grap.SetTextRenderingHint(TextRenderingHintAntiAlias);
 		RectF rcf(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
-		GraphicsPath path;
-		path.AddString(textDesc.content.c_str(), textDesc.content.length(), &fontFamily, textDesc.style, textDesc.fontSize, rcf, &stringFormat);
-		if (textDesc.bGlow)
-		{
-			for (int i = 1; i < 8; i++)
-			{
-				Pen pen(textDesc.glowColor, i);
-				pen.SetLineJoin(LineJoinRound);
-				grap.DrawPath(&pen, &path);
-			}
-
-			DWORD dwColor1 = textDesc.textColor;
-			DWORD dwColor2 = textDesc.textColor1;
-			if (dwColor2 == 0)
-				dwColor2 = dwColor1;
-			Gdiplus::LinearGradientBrush linGrBrush(
-				Gdiplus::PointF(rc.left, rc.top),
-				Gdiplus::PointF(rc.right, rc.bottom),
-				dwColor1,
-				dwColor2
-				);
-
-			grap.FillPath(&linGrBrush, &path);
-
-			return;
-		}
-		
-		if (textDesc.bStroke)
-		{
-			if (textDesc.doubleColor > 0)
-			{
-				Pen pen(textDesc.doubleColor, 4);
-				pen.SetLineJoin(LineJoinRound);
-				grap.DrawPath(&pen, &path);
-			}
-
-			if (textDesc.singleColor > 0)
-			{
-				Pen pen(textDesc.singleColor, 2);
-				pen.SetLineJoin(LineJoinRound);
-				grap.DrawPath(&pen, &path);
-			}
-
-			Pen pen(textDesc.textColor);
-			grap.DrawPath(&pen, &path);
-
-			DWORD dwColor1 = textDesc.textColor;
-			DWORD dwColor2 = textDesc.textColor1;
-			if (dwColor2 == 0)
-				dwColor2 = dwColor1;
-			Gdiplus::LinearGradientBrush linGrBrush(
-				Gdiplus::PointF(rc.left, rc.top),
-				Gdiplus::PointF(rc.right, rc.bottom),
-				dwColor1,
-				dwColor2
-				);
-
-			grap.FillPath(&linGrBrush, &path);
-			return ;
-		}
-
-		Pen pen(textDesc.textColor);
-		grap.DrawPath(&pen, &path);
+		Gdiplus::Font font(&fontFamily, textDesc.fontSize, textDesc.style, UnitPixel);
+		SolidBrush solidBrush(textDesc.textColor);
+		grap.DrawString(textDesc.content.c_str(), -1, &font, rcf, &stringFormat, &solidBrush);
 	}
 
 	void BRenderEngineGdiPlus::DrawImage(HDC hdc, const ImageDescription& imageDesc)

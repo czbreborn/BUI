@@ -105,6 +105,37 @@ namespace BUI{
 
 	}
 
+	RECT& BUIManager::GetSizeBox()
+	{
+		return m_rcSizeBox;
+	}
+
+	void BUIManager::SetSizeBox(const RECT& rcSizeBox)
+	{
+		m_rcSizeBox = rcSizeBox;
+	}
+
+	RECT& BUIManager::GetCaptionRect()
+	{
+		return m_rcCaption;
+	}
+
+	void BUIManager::SetCaptionRect(const RECT& rcCaption)
+	{
+		m_rcCaption = rcCaption;
+	}
+
+	SIZE BUIManager::GetRoundCorner() const
+	{
+		return m_szRoundCorner;
+	}
+
+	void BUIManager::SetRoundCorner(int cx, int cy)
+	{
+		m_szRoundCorner.cx = cx;
+		m_szRoundCorner.cy = cy;
+	}
+
 	LRESULT BUIManager::MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		LRESULT res = -1;
@@ -114,13 +145,6 @@ namespace BUI{
 			WMPROC proc = static_cast<WMPROC>(it->second);
 			res = (this->*proc)(wParam, lParam);
 		}
-
-		std::wstringstream ss;
-		ss << ::GetTickCount();
-		ss << _T(" ");
-		ss << uMsg;
-		ss << _T("\n");
-		::OutputDebugString(ss.str().c_str());
 
 		return res;
 	}

@@ -45,7 +45,7 @@ namespace BUI{
 		m_widgetName = name;
 	}
 
-	LPCTSTR BUIWidget::GetType()
+	LPCTSTR BUIWidget::GetType() const
 	{
 		return BUI_WIN_WIDGET;
 	}
