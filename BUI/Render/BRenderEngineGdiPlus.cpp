@@ -378,4 +378,23 @@ namespace BUI{
 		grap.SetClip(Rect(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top));
 		grap.DrawCachedBitmap(&cacheBmp, 0, 0);
 	}
+
+	SIZE BRenderEngineGdiPlus::GetTextSize(const bstring text, const bstring& fontFamily, const DWORD fontSize, UINT style)
+	{
+		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
+		if (!fontFamily.empty())
+			strfamily = fontFamily;
+		FontFamily family(strfamily.c_str());
+		StringFormat stringFormat;
+		stringFormat.SetFormatFlags(StringFormatFlagsNoWrap);
+
+		PointF point(0, 0);
+		GraphicsPath path;
+		path.AddString(text.c_str(), text.length(), &family, style, fontSize, point, &stringFormat);
+		Rect rcText;
+		path.GetBounds(&rcText);
+		
+		SIZE szText = { rcText.Width, rcText.Height };
+		return szText;
+	}
 }

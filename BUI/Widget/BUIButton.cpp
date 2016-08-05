@@ -99,40 +99,32 @@ namespace BUI{
 
 	void BUIButton::Event(TEventUI& event)
 	{
-		if (event.type == uievent_setfocus)
-		{
+		if (event.type == uievent_setfocus) {
 			Invalidate();
 		}
 		
-		if (event.type == uievent_killfocus)
-		{
+		if (event.type == uievent_killfocus) {
 			Invalidate();
 		}
 
-		if (event.type == uievent_buttondown)
-		{
-			if (::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled())
-			{
+		if (event.type == uievent_buttondown) {
+			if (::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled()) {
 				m_buttonState |= UISTATE_PUSHED | UISTATE_CAPTURED;
 				Invalidate();
 			}
 			return;
 		}
 
-		if( event.type == uievent_buttonup)
-		{
-			if ((m_buttonState & UISTATE_CAPTURED) != 0)
-			{
+		if( event.type == uievent_buttonup) {
+			if ((m_buttonState & UISTATE_CAPTURED) != 0) {
 				m_buttonState &= ~(UISTATE_PUSHED | UISTATE_CAPTURED);
 				Invalidate();
 			}
 			return;
 		}
 
-		if (event.type == uievent_mousemove)
-		{
-			if ((m_buttonState & UISTATE_CAPTURED) != 0)
-			{
+		if (event.type == uievent_mousemove) {
+			if ((m_buttonState & UISTATE_CAPTURED) != 0) {
 				if (::PtInRect(&m_rcItem, event.ptMouse)) 
 					m_buttonState |= UISTATE_PUSHED;
 				else 
@@ -142,17 +134,14 @@ namespace BUI{
 			return;
 		}
 
-		if (event.type == uievent_mouseenter)
-		{
-			if (IsEnabled())
-			{
+		if (event.type == uievent_mouseenter) {
+			if (IsEnabled()) {
 				m_buttonState |= UISTATE_HOT;
 				Invalidate();
 			}
 		}
 
-		if( event.type == uievent_mouseleave )
-		{
+		if (event.type == uievent_mouseleave){
 			if( IsEnabled() ) {
 				m_buttonState &= ~UISTATE_HOT;
 				Invalidate();
@@ -175,24 +164,15 @@ namespace BUI{
 			m_buttonState &= ~UISTATE_DISABLED;
 
 		bstring filePath = BApplication::GetInstance()->GetApplicationPath();
-		if ((m_buttonState & UISTATE_DISABLED) != 0)
-		{
+		if ((m_buttonState & UISTATE_DISABLED) != 0) {
 			filePath += m_disabledImage;
-		}
-		else if ((m_buttonState & UISTATE_PUSHED) != 0)
-		{
+		} else if ((m_buttonState & UISTATE_PUSHED) != 0) {
 			filePath += m_pushedImage;
-		}
-		else if ((m_buttonState & UISTATE_HOT) != 0)
-		{
+		} else if ((m_buttonState & UISTATE_HOT) != 0) {
 			filePath += m_hotImage;
-		}
-		else if ((m_buttonState & UISTATE_FOCUSED) != 0)
-		{
+		} else if ((m_buttonState & UISTATE_FOCUSED) != 0) {
 			filePath += m_focusedImage;
-		}
-		else
-		{
+		} else {
 			filePath += m_normalImage;	
 		}
 
@@ -201,6 +181,5 @@ namespace BUI{
 		imageDesc.rcSrc = m_rcItem;
 		imageDesc.rcPaint = m_rcPaint;
 		BRenderEngineManager::GetInstance()->RenderEngine()->DrawImage(hDC, imageDesc);
-		// BRenderEngineManager::GetInstance()->RenderEngine()->DrawImage(hDC, filePath.c_str(), m_rcItem, m_rcPaint);
 	}
 }

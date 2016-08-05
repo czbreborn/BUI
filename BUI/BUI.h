@@ -36,6 +36,8 @@ using namespace std;
 #define bstringstream stringstream
 #endif
 
+const bstring k_empty_string(_T(""));
+
 // äÖÈ¾ÒıÇægdiplus
 #include <comdef.h>
 #include <gdiplus.h>

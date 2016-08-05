@@ -93,6 +93,8 @@ namespace BUI{
 		virtual bool DrawWindowRgn(HWND hwnd, const RECT& rc) = 0;
 		virtual bool DrawWindowRoundRgn(HWND hwnd, const RECT& rc, int width, int height) = 0;
 		virtual void DrawCanvas(BCanvas* canvas, const RECT& rc) = 0;
+
+		virtual SIZE GetTextSize(const bstring text, const bstring& fontFamily, const DWORD fontSize, UINT style) = 0;
 	};
 }
 

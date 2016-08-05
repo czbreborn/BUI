@@ -17,6 +17,7 @@ namespace BUI{
 
 		void Init(HWND hwnd, LPCTSTR name = NULL);
 		HDC GetPaintDC();
+		HWND GetPaintWindow() const;
 
 	public:
 		bool IsUpdateNeeded() const;
@@ -44,6 +45,15 @@ namespace BUI{
 		BUIWidget* FindControl(LPCTSTR pstrName);
 
 	public:
+		// 光标管理
+		BOOL CreateCaret(int width, int height, HBITMAP hBitmap = NULL);
+		BOOL DestroyCaret();
+		BOOL ShowCaret();
+		BOOL HideCaret();
+		BOOL SetCaretPos(int x, int y);
+		BOOL GetCaretPos(LPPOINT lpPoint);
+
+	public:
 		 bool MessageRouting(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& lRes);
 
 	protected:
@@ -67,6 +77,8 @@ namespace BUI{
 		LRESULT OnSize(WPARAM wParam, LPARAM lParam);
 		LRESULT OnGetMinMaxInfo(WPARAM wParam, LPARAM lParam);
 
+		LRESULT OnChar(WPARAM wParam, LPARAM lParam);
+
 	private:
 		static WMPROCMAP s_wmProcMap;
 
@@ -88,6 +100,13 @@ namespace BUI{
 		RECT m_rcSizeBox;
 		RECT m_rcCaption;
 		SIZE m_szRoundCorner;
+		POINT m_ptLastMousePos;
+
+		// 光标相关属性
+		int m_caretWidth;
+		int m_caretHeight;
+		HBITMAP m_caretBitMap;
+		bool m_existCaret;
 	};
 }
 

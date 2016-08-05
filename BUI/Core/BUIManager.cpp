@@ -11,7 +11,11 @@ namespace BUI{
 		m_bResizeNeeded(false),
 		m_rootWidget(NULL),
 		m_focusedWidget(NULL),
-		m_eventClickWidget(NULL)
+		m_eventClickWidget(NULL),
+		m_caretWidth(-1),
+		m_caretHeight(-1),
+		m_caretBitMap(NULL),
+		m_existCaret(false)
 	{
 	#define WMPROCBIND(msg, func) \
 		s_wmProcMap.insert(make_pair(msg, SELECTOR(func)))
@@ -19,6 +23,7 @@ namespace BUI{
 		// 绘制消息
 		WMPROCBIND(WM_ERASEBKGND, BUIManager::OnEraseBkgnd);
 		WMPROCBIND(WM_PAINT, BUIManager::OnPaint);
+
 		// 鼠标消息
 		WMPROCBIND(WM_MOUSEMOVE, BUIManager::OnMouseMove);
 		WMPROCBIND(WM_LBUTTONDOWN, BUIManager::OnLButtonDown);
@@ -30,14 +35,25 @@ namespace BUI{
 		WMPROCBIND(WM_MBUTTONDOWN, BUIManager::OnMButtonDown);
 		WMPROCBIND(WM_MBUTTONUP, BUIManager::OnMButtonUp);
 		WMPROCBIND(WM_MBUTTONDBLCLK, BUIManager::OnMButtonDBClick);
-		WMPROCBIND(WM_MOUSEWHEEL, BUIManager::OnMouseWheel);	
+		WMPROCBIND(WM_MOUSEWHEEL, BUIManager::OnMouseWheel);
+
 		WMPROCBIND(WM_SETCURSOR, BUIManager::OnSetCursor);
 		WMPROCBIND(WM_COMMAND, BUIManager::OnCommand);
 		WMPROCBIND(WM_SIZE, BUIManager::OnSize);
 		WMPROCBIND(WM_GETMINMAXINFO, BUIManager::OnGetMinMaxInfo);
 
+		// 键盘消息
+		WMPROCBIND(WM_CHAR, BUIManager::OnChar);
+
 		m_szMinWindow.cx = m_szMinWindow.cy = 0;
 		m_szMaxWindow.cx = m_szMaxWindow.cy = 0;
+		m_szInitWindowSize.cx = m_szInitWindowSize.cy = 300;
+		m_szRoundCorner.cx = m_szRoundCorner.cy = 0;
+
+		::ZeroMemory(&m_rcSizeBox, sizeof(m_rcSizeBox));
+		::ZeroMemory(&m_rcCaption, sizeof(m_rcCaption));
+
+		m_ptLastMousePos.x = m_ptLastMousePos.y = 0;
 	}
 
 
@@ -62,6 +78,11 @@ namespace BUI{
 	HDC BUIManager::GetPaintDC()
 	{
 		return m_hdcPaint;
+	}
+
+	HWND BUIManager::GetPaintWindow() const
+	{
+		return m_hWndPaint;
 	}
 
 	bool BUIManager::IsUpdateNeeded() const
@@ -224,13 +245,48 @@ namespace BUI{
 
 	LRESULT BUIManager::OnMouseMove(WPARAM wParam, LPARAM lParam)
 	{
+		POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+		m_ptLastMousePos = pt;
+		BUIWidget* pNewWidget = FindControl(pt);
+		if (pNewWidget != NULL && pNewWidget->GetManager() != this)
+			return 1;
+
+		TEventUI event = { 0 };
+		event.ptMouse = pt;
+		event.dwTimestamp = ::GetTickCount();
+		if (m_eventClickWidget != NULL && 
+			m_eventClickWidget != pNewWidget) {
+			event.type = uievent_mouseleave;
+			event.pSender = m_eventClickWidget;
+			m_eventClickWidget->Event(event);
+			m_eventClickWidget = NULL;
+		}
+
+		if (pNewWidget != NULL && 
+			pNewWidget != m_eventClickWidget) {
+			event.type = uievent_mouseenter;
+			event.pSender = pNewWidget;
+			pNewWidget->Event(event);
+			m_eventClickWidget = NULL;
+		}
+
+		if (m_eventClickWidget != NULL) {
+			event.type = uievent_mousemove;
+			event.pSender = m_eventClickWidget;
+			m_eventClickWidget->Event(event);
+		} else if (pNewWidget != NULL) {
+			event.type = uievent_mousemove;
+			event.pSender = pNewWidget;
+			pNewWidget->Event(event);
+		}
+
 		return 0;
 	}
 
 	LRESULT BUIManager::OnLButtonDown(WPARAM wParam, LPARAM lParam)
 	{
 		// We alway set focus back to our app (this helps
-		// when Win32 child windows are placed on the dialog
+		// when Win32 child windows are placed on the diuievent_mousemovealog
 		// and we need to remove them on focus change).
 		::SetFocus(m_hWndPaint);
 		POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
@@ -251,6 +307,7 @@ namespace BUI{
 		event.wKeyState = wParam;
 		event.dwTimestamp = ::GetTickCount();
 		pWidget->Event(event);
+		
 		// We always capture the mouse
 		::SetCapture(m_hWndPaint);
 
@@ -352,6 +409,22 @@ namespace BUI{
 		return 1;
 	}
 
+	LRESULT BUIManager::OnChar(WPARAM wParam, LPARAM lParam)
+	{
+		if (m_focusedWidget) {
+			TEventUI event = { 0 };
+			event.type = uievent_char;
+			event.wParam = wParam;
+			event.lParam = lParam;
+			event.chKey = wParam;
+			event.wKeyState = lParam;
+			event.dwTimestamp = ::GetTickCount();
+			m_focusedWidget->Event(event);
+		}
+
+		return 1;
+	}
+
 	BUIWidget* BUIManager::FindControl(POINT pt) const
 	{
 		return m_rootWidget->FindControl(BUIAssist::FindWidgetFromPoint, &pt, UIFIND_VISIBLE | UIFIND_HITTEST);
@@ -360,5 +433,69 @@ namespace BUI{
 	BUIWidget* BUIManager::FindControl(LPCTSTR pstrName)
 	{
 		return NULL;
+	}
+
+	BOOL BUIManager::CreateCaret(int width, int height, HBITMAP hBitmap/* = NULL*/)
+	{
+		BOOL ret = FALSE;
+		if (m_existCaret) {
+			if (m_caretWidth != width ||
+				m_caretHeight != height ||
+				m_caretBitMap != hBitmap) {
+					if (DestroyCaret()){
+						if (::CreateCaret(m_hWndPaint, hBitmap, width, height)) {
+							m_caretBitMap = hBitmap;
+							m_caretWidth = width;
+							m_caretHeight = height;
+							m_existCaret = true;
+							ret = TRUE;
+						}
+					}
+			} else {	// 存在相同的光标
+				ret = TRUE;
+			}
+		} else {
+			if (::CreateCaret(m_hWndPaint, hBitmap, width, height)) {
+				m_caretBitMap = hBitmap;
+				m_caretWidth = width;
+				m_caretHeight = height;
+				m_existCaret = true;
+				ret = TRUE;
+			}
+		}
+		return ret;
+	}
+
+	BOOL BUIManager::DestroyCaret()
+	{
+		BOOL ret = FALSE;
+		if (::DestroyCaret()) {
+			m_caretBitMap = NULL;
+			m_caretWidth = -1;
+			m_caretHeight = -1;
+			m_existCaret = false;
+			ret = TRUE;
+		}
+		return ret;
+	}
+
+	BOOL BUIManager::ShowCaret()
+	{
+		return ::ShowCaret(m_hWndPaint);
+	}
+
+	BOOL BUIManager::HideCaret()
+	{
+		return ::HideCaret(m_hWndPaint);
+	}
+
+	BOOL BUIManager::SetCaretPos(int x, int y)
+	{
+		return ::SetCaretPos(x, y);
+	}
+
+	BOOL BUIManager::GetCaretPos(LPPOINT lpPoint)
+	{
+		return ::GetCaretPos(lpPoint);
 	}
 }
