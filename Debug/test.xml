@@ -11,6 +11,7 @@
 		<Button name="changeskinbtn" height="40" text="换皮" maxwidth="120" bordersize="1" borderround="10,10" align="left" valign="top"/>
 		<Widget height="26"/>
 		<Button name="SettingBtn" text="设置" float="true" pos="66, 90, 126, 110" tooltip="Use English Language" normalimage="button_nor.bmp" hotimage="button_over.bmp" pushedimage="button_down.bmp" />
-		<Button name="changeskinbtn" text="不知" height="40" text="换肤" maxwidth="120" bordersize="1" borderround="10,10" normalimage="button_nor.bmp" hotimage="button_over.bmp" pushedimage="button_down.bmp"/>
+		<Button name="changeskinbtn" text="不知" height="40" maxwidth="120" bordersize="1" borderround="10,10" normalimage="button_nor.bmp" hotimage="button_over.bmp" pushedimage="button_down.bmp"/>
+		<Edit name="changeskinbtn" text="测试edit控件" height="40" width="120" bordercolor="#FFFFFFFF" bordersize="1" borderround="5,5"/>
 	</VerticalLayout>
 </Window>

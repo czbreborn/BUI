@@ -77,6 +77,7 @@ namespace BUI{
 		LRESULT OnSize(WPARAM wParam, LPARAM lParam);
 		LRESULT OnGetMinMaxInfo(WPARAM wParam, LPARAM lParam);
 
+		LRESULT OnKeyDown(WPARAM wParam, LPARAM lParam);
 		LRESULT OnChar(WPARAM wParam, LPARAM lParam);
 
 	private:

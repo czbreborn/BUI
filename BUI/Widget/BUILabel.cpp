@@ -11,7 +11,7 @@ namespace BUI{
 		m_textDesc.textColor1 = customcolor_black;
 		m_textDesc.fontSize = 14;
 		m_textDesc.style = FontStyleRegular;
-		m_textDesc.align = ALIGNMENTMIDDLE;
+		m_textDesc.align = ALIGNMENTDEFAULT;
 		m_textDesc.formatFlags = StringFormatFlagsNoWrap;
 	}
 
@@ -174,7 +174,8 @@ namespace BUI{
 	void BUILabel::PaintText(HDC hDC)
 	{
 		m_textDesc.content = GetText();
-		BRenderEngineManager::GetInstance()->RenderEngine()->DrawText(hDC, m_rcPaint, m_textDesc);
+		RectF rcf(m_rcPaint.left, m_rcPaint.top, m_rcPaint.right - m_rcPaint.left, m_rcPaint.bottom - m_rcPaint.top);
+		BRenderEngineManager::GetInstance()->RenderEngine()->DrawText(hDC, rcf, m_textDesc);
 	}
 
 	void BUILabel::Event(TEventUI& event)

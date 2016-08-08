@@ -54,10 +54,12 @@ namespace BUI{
 		void PaintText(HDC hDC);
 
 	private:
+		void onMouseMove(LONG mouseXPos);
+		void onKeyDown(TCHAR chKey);
 		void onChar(TCHAR chKey);
 
-		LONG locateCaretXPos(LONG mouseXPos);
-		SIZE getTextSize(const bstring text);
+		UINT locateCaretPlace(LONG mouseXPos);
+		SizeF getTextSize(const bstring text);
 		RECT getContentRect();
 
 	private:
@@ -78,8 +80,10 @@ namespace BUI{
 
 		UINT m_caretPlace;			// 位于编辑框那个字符后面
 		UINT m_beginDrawPlace;		// 开始绘制的字符位置
-		bstring m_drawString;		// 绘制的字符
 		
+		RectF m_rcSelectString;		// 选中文字对应的绘制窗口
+		bstring m_selectString;		// 选中的文字
+
 		bstring m_tipsString;		// 提示字符
 	};
 }

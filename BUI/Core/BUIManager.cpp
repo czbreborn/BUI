@@ -43,8 +43,9 @@ namespace BUI{
 		WMPROCBIND(WM_GETMINMAXINFO, BUIManager::OnGetMinMaxInfo);
 
 		// ¼üÅÌÏûÏ¢
+		WMPROCBIND(WM_KEYDOWN, BUIManager::OnKeyDown);
 		WMPROCBIND(WM_CHAR, BUIManager::OnChar);
-
+		
 		m_szMinWindow.cx = m_szMinWindow.cy = 0;
 		m_szMaxWindow.cx = m_szMaxWindow.cy = 0;
 		m_szInitWindowSize.cx = m_szInitWindowSize.cy = 300;
@@ -128,7 +129,44 @@ namespace BUI{
 
 	void BUIManager::SetFocus(BUIWidget* widget)
 	{
+		// Paint manager window has focus?
+		HWND hFocusWnd = ::GetFocus();
+		if (hFocusWnd != m_hWndPaint && 
+			widget != m_focusedWidget) {
+			::SetFocus(m_hWndPaint);
+		}
 
+		// Already has focus?
+		if (widget == m_focusedWidget) 
+			return;
+
+		// Remove focus from old control
+		if (m_focusedWidget != NULL) {
+			TEventUI event = { 0 };
+			event.type = uievent_killfocus;
+			event.pSender = widget;
+			event.dwTimestamp = ::GetTickCount();
+			m_focusedWidget->Event(event);
+			//SendNotify(m_pFocus, DUI_MSGTYPE_KILLFOCUS);
+			m_focusedWidget = NULL;
+		}
+
+		if (widget == NULL) 
+			return;
+
+		// Set focus to new control
+		if (widget != NULL && 
+			widget->GetManager() == this &&
+			widget->IsVisible() &&
+			widget->IsEnabled()) {
+			m_focusedWidget = widget;
+			TEventUI event = { 0 };
+			event.type = uievent_setfocus;
+			event.pSender = widget;
+			event.dwTimestamp = ::GetTickCount();
+			m_focusedWidget->Event(event);
+			// SendNotify(m_pFocus, DUI_MSGTYPE_SETFOCUS);
+		}
 	}
 
 	RECT& BUIManager::GetSizeBox()
@@ -406,6 +444,22 @@ namespace BUI{
 			lpMMI->ptMaxTrackSize.x = m_szMaxWindow.cx;
 		if (m_szMaxWindow.cy > 0)
 			lpMMI->ptMaxTrackSize.y = m_szMaxWindow.cy;
+		return 1;
+	}
+
+	LRESULT BUIManager::OnKeyDown(WPARAM wParam, LPARAM lParam)
+	{
+		if (m_focusedWidget) {
+			TEventUI event = { 0 };
+			event.type = uievent_keydown;
+			event.wParam = wParam;
+			event.lParam = lParam;
+			event.chKey = wParam;
+			event.wKeyState = lParam;
+			event.dwTimestamp = ::GetTickCount();
+			m_focusedWidget->Event(event);
+		}
+
 		return 1;
 	}
 

@@ -106,7 +106,7 @@ namespace BUI{
 		return pPath;
 	}
 
-	void BRenderEngineGdiPlus::drawGlowText(Graphics& grap, const RECT& rc, const TextDescription& textDesc)
+	void BRenderEngineGdiPlus::drawGlowText(Graphics& grap, const RectF& rc, const TextDescription& textDesc)
 	{
 		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
 		if (!textDesc.fontFamily.empty())
@@ -117,9 +117,8 @@ namespace BUI{
 		stringFormat.SetLineAlignment(convertLineAlignment(textDesc.align));
 		stringFormat.SetFormatFlags(textDesc.formatFlags);
 
-		RectF rcf(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 		GraphicsPath path;
-		path.AddString(textDesc.content.c_str(), textDesc.content.length(), &fontFamily, textDesc.style, textDesc.fontSize, rcf, &stringFormat);
+		path.AddString(textDesc.content.c_str(), textDesc.content.length(), &fontFamily, textDesc.style, textDesc.fontSize, rc, &stringFormat);
 
 		for (int i = 1; i < 8; i++)
 		{
@@ -133,8 +132,8 @@ namespace BUI{
 		if (dwColor2 == 0)
 			dwColor2 = dwColor1;
 		Gdiplus::LinearGradientBrush linGrBrush(
-			Gdiplus::PointF(rc.left, rc.top),
-			Gdiplus::PointF(rc.right, rc.bottom),
+			Gdiplus::PointF(rc.GetLeft(), rc.GetTop()),
+			Gdiplus::PointF(rc.GetRight(), rc.GetBottom()),
 			dwColor1,
 			dwColor2
 			);
@@ -142,7 +141,7 @@ namespace BUI{
 		grap.FillPath(&linGrBrush, &path);
 	}
 
-	void BRenderEngineGdiPlus::drawStrokeText(Graphics& grap, const RECT& rc, const TextDescription& textDesc)
+	void BRenderEngineGdiPlus::drawStrokeText(Graphics& grap, const RectF& rc, const TextDescription& textDesc)
 	{
 		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
 		if (!textDesc.fontFamily.empty())
@@ -153,9 +152,8 @@ namespace BUI{
 		stringFormat.SetLineAlignment(convertLineAlignment(textDesc.align));
 		stringFormat.SetFormatFlags(textDesc.formatFlags);
 
-		RectF rcf(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 		GraphicsPath path;
-		path.AddString(textDesc.content.c_str(), textDesc.content.length(), &fontFamily, textDesc.style, textDesc.fontSize, rcf, &stringFormat);
+		path.AddString(textDesc.content.c_str(), textDesc.content.length(), &fontFamily, textDesc.style, textDesc.fontSize, rc, &stringFormat);
 
 		if (textDesc.doubleColor > 0)
 		{
@@ -179,8 +177,8 @@ namespace BUI{
 		if (dwColor2 == 0)
 			dwColor2 = dwColor1;
 		Gdiplus::LinearGradientBrush linGrBrush(
-			Gdiplus::PointF(rc.left, rc.top),
-			Gdiplus::PointF(rc.right, rc.bottom),
+			Gdiplus::PointF(rc.GetLeft(), rc.GetTop()),
+			Gdiplus::PointF(rc.GetRight(), rc.GetBottom()),
 			dwColor1,
 			dwColor2
 			);
@@ -242,13 +240,13 @@ namespace BUI{
 		delete pPath;
 	}
 
-	void BRenderEngineGdiPlus::DrawText(HDC hdc, const RECT& rc, const TextDescription& textDesc)
+	void BRenderEngineGdiPlus::DrawText(HDC hdc, const RectF& rc, const TextDescription& textDesc)
 	{
 		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
 		assert(canvas);
 		Graphics grap(canvas->GetCanvas());
 		grap.SetSmoothingMode(SmoothingModeAntiAlias);
-		grap.SetTextRenderingHint(TextRenderingHintAntiAlias);
+		grap.SetTextRenderingHint(TextRenderingHintSystemDefault);
 		if (textDesc.bGlow)
 		{
 			drawGlowText(grap, rc, textDesc);
@@ -270,10 +268,9 @@ namespace BUI{
 		stringFormat.SetLineAlignment(convertLineAlignment(textDesc.align));
 		stringFormat.SetFormatFlags(textDesc.formatFlags);
 
-		RectF rcf(rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 		Gdiplus::Font font(&fontFamily, textDesc.fontSize, textDesc.style, UnitPixel);
 		SolidBrush solidBrush(textDesc.textColor);
-		grap.DrawString(textDesc.content.c_str(), -1, &font, rcf, &stringFormat, &solidBrush);
+		grap.DrawString(textDesc.content.c_str(), -1, &font, rc, &stringFormat, &solidBrush);
 	}
 
 	void BRenderEngineGdiPlus::DrawImage(HDC hdc, const ImageDescription& imageDesc)
@@ -379,7 +376,30 @@ namespace BUI{
 		grap.DrawCachedBitmap(&cacheBmp, 0, 0);
 	}
 
-	SIZE BRenderEngineGdiPlus::GetTextSize(const bstring text, const bstring& fontFamily, const DWORD fontSize, UINT style)
+	SizeF BRenderEngineGdiPlus::GetTextSize(HDC hdc, const TextDescription& textDesc)
+	{
+		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
+		assert(canvas);
+		Graphics grap(canvas->GetCanvas());
+		grap.SetSmoothingMode(SmoothingModeAntiAlias);
+		grap.SetTextRenderingHint(TextRenderingHintSystemDefault);
+
+		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
+		if (!textDesc.fontFamily.empty())
+			strfamily = textDesc.fontFamily;
+		FontFamily fontFamily(strfamily.c_str());
+		StringFormat stringFormat;
+		stringFormat.SetAlignment(convertAlignment(textDesc.align));
+		stringFormat.SetLineAlignment(convertLineAlignment(textDesc.align));
+		stringFormat.SetFormatFlags(textDesc.formatFlags);
+
+		RectF rcf;
+		Gdiplus::Font font(&fontFamily, textDesc.fontSize, textDesc.style, UnitPixel);
+		grap.MeasureString(textDesc.content.c_str(), textDesc.content.length(), &font, PointF(0, 0), &stringFormat, &rcf);
+		return SizeF(rcf.Width, rcf.Height);
+	}
+
+	SizeF BRenderEngineGdiPlus::GetTextSize(const bstring text, const bstring& fontFamily, const DWORD fontSize, UINT style)
 	{
 		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
 		if (!fontFamily.empty())
@@ -391,10 +411,9 @@ namespace BUI{
 		PointF point(0, 0);
 		GraphicsPath path;
 		path.AddString(text.c_str(), text.length(), &family, style, fontSize, point, &stringFormat);
-		Rect rcText;
-		path.GetBounds(&rcText);
+		RectF rcf;
+		path.GetBounds(&rcf);
 		
-		SIZE szText = { rcText.Width, rcText.Height };
-		return szText;
+		return SizeF(rcf.Width, rcf.Height);
 	}
 }

@@ -529,6 +529,8 @@ namespace BUI{
 
 	void BUIWidget::SetFocus()
 	{
-		// coding...........
+		if (m_pUIManager != NULL) {
+			m_pUIManager->SetFocus(this);
+		}
 	}
 }
