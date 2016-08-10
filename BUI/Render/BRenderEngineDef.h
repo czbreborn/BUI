@@ -59,6 +59,27 @@ namespace BUI{
 		bool bStroke;			// 是否描边
 		DWORD singleColor;		// 描边的单边颜色
 		DWORD doubleColor;		// 描边的双边颜色
+		UINT  selectedBegin;	// 选中内容的起始位置
+		UINT  selectedCount;	// 选中内容的结束位置
+		DWORD selectedBkColor;	// 选中内容的背景色
+		DWORD contentBkColor;	// 文字的背景色（用于取反选中内容的背景色）
+		tagTextDescription() 
+		{
+			textColor = customcolor_black;
+			textColor1 = customcolor_black;
+			fontSize = 12;
+			style = FontStyleRegular;
+			align = ALIGNMENTDEFAULT;
+			formatFlags = StringFormatFlagsNoWrap;
+			bGlow = false;
+			glowColor = customcolor_green;
+			bStroke = false;
+			singleColor = customcolor_green;
+			doubleColor = customcolor_blue;
+			selectedBegin = -1;
+			selectedCount = 0;
+			selectedBkColor = 0x663399ff;
+		}
 	} TextDescription;
 
 	typedef struct tagImageDescription
@@ -96,7 +117,7 @@ namespace BUI{
 		virtual bool DrawWindowRoundRgn(HWND hwnd, const RECT& rc, int width, int height) = 0;
 		virtual void DrawCanvas(BCanvas* canvas, const RECT& rc) = 0;
 
-		virtual SizeF GetTextSize(HDC hdc, const TextDescription& textDesc) = 0;
+		virtual SizeF GetTextSize(HDC hdc, const RectF& rc, const TextDescription& textDesc) = 0;
 		virtual SizeF GetTextSize(const bstring text, const bstring& fontFamily, const DWORD fontSize, UINT style) = 0;
 	};
 }

@@ -5,7 +5,8 @@ namespace BUI {
 	IMPLEMENT_CREATEWIDGET(BUIEdit)
 
 	BUIEdit::BUIEdit(void)
-	: m_caretState(false),
+	: m_mouseState(false),
+	m_caretState(false),
 	m_uMaxChar(0xFF),
 	m_readOnly(false),
 	m_numberOnly(false),
@@ -22,32 +23,12 @@ namespace BUI {
 	m_tipsString(k_empty_string)
 	{
 		m_rcPadding.left = m_rcPadding.right = m_rcPadding.top = m_rcPadding.bottom = 2;
+		m_borderSize.left = 1;
+		m_borderColor = customcolor_red;
 	}
 
 	BUIEdit::~BUIEdit(void)
 	{
-	}
-
-	void BUIEdit::SetPadding(const LONG& padding)
-	{
-		RECT rcPadding = {padding, padding, padding, padding};
-		SetPadding(rcPadding);
-	}
-
-	void BUIEdit::SetPadding(const SIZE& szPadding)
-	{
-		RECT rcPadding = {szPadding.cx, szPadding.cy, szPadding.cx, szPadding.cy};
-		SetPadding(rcPadding);
-	}
-
-	void BUIEdit::SetPadding(const RECT& rcPadding)
-	{
-		m_rcPadding = rcPadding;
-	}
-
-	RECT BUIEdit::GetPadding() const
-	{
-		return m_rcPadding;
 	}
 
 	void BUIEdit::SetMaxChar(UINT uMax)
@@ -183,22 +164,30 @@ namespace BUI {
 	{
 		if (event.type == uievent_setfocus) {
 			m_pUIManager->CreateCaret(1, getContentRect().bottom - getContentRect().top);
+			m_caretState = false;
+			m_selectedBeginPalce = 0;
+			m_selectedEndPlace = 0;
 			Invalidate();
 		}
 
 		if (event.type == uievent_killfocus) {
 			m_pUIManager->DestroyCaret();
+			m_caretState = false;
+			m_selectedBeginPalce = 0;
+			m_selectedEndPlace = 0;
 			Invalidate();
 		}
 
 		if (event.type == uievent_buttondown) {
+			m_selectedBeginPalce = 0;
+			m_selectedEndPlace = 0;
 			if (::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled()) {
 				m_caretPlace = locateCaretPlace(event.ptMouse.x);
 				if (m_caretPlace == m_beginDrawPlace) {
 					m_pUIManager->SetCaretPos(getContentRect().left, getContentRect().top);
 				} else {
 					SizeF szText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace));
-					m_pUIManager->SetCaretPos(getContentRect().left + szText.Width, getContentRect().top);
+					m_pUIManager->SetCaretPos(getContentRect().left + ceil(szText.Width), getContentRect().top);
 				}
 
 				if (!m_caretState) {
@@ -213,26 +202,25 @@ namespace BUI {
 			Invalidate();
 		}
 
+		if (event.type == uievent_mouseenter) {
+			if (!m_mouseState) {
+				SetClassLong(m_pUIManager->GetPaintWindow(), GCL_HCURSOR, (LONG)LoadCursor(NULL,IDC_IBEAM));
+				m_mouseState = true;
+			}
+		}
+
 		if (event.type == uievent_mousemove) {
 			if (::PtInRect(&m_rcItem, event.ptMouse) && IsEnabled()) {
 				if (::GetKeyState(VK_LBUTTON) < 0) {
-					UINT leftCaretPlace = m_caretPlace;
-					UINT rightCaretPlace = locateCaretPlace(event.ptMouse.x);
-					if (leftCaretPlace > rightCaretPlace) {
-						UINT caretPlace = leftCaretPlace;
-						leftCaretPlace = rightCaretPlace;
-						rightCaretPlace = caretPlace;
+					m_selectedBeginPalce = m_caretPlace;
+					m_selectedEndPlace = locateCaretPlace(event.ptMouse.x);
+					if (m_selectedBeginPalce > m_selectedEndPlace) {
+						UINT caretPlace = m_selectedBeginPalce;
+						m_selectedBeginPalce = m_selectedEndPlace;
+						m_selectedEndPlace = caretPlace;
 					}
 
-					m_selectString = m_strText.substr(leftCaretPlace, rightCaretPlace - leftCaretPlace);
-					if (!m_selectString.empty()) {
-						SizeF szLeftCaret = getTextSize(m_strText.substr(m_beginDrawPlace, leftCaretPlace - m_beginDrawPlace));
-						SizeF szRightCaret= getTextSize(m_strText.substr(m_beginDrawPlace, rightCaretPlace - m_beginDrawPlace));
-						m_rcSelectString.X = getContentRect().left + szLeftCaret.Width;
-						m_rcSelectString.Width = szRightCaret.Width - szLeftCaret.Width;
-						m_rcSelectString.Y = getContentRect().top;
-						m_rcSelectString.Height = getContentRect().bottom - getContentRect().top;
-
+					if (m_selectedBeginPalce < m_selectedEndPlace) {
 						if (m_caretState) {
 							m_pUIManager->HideCaret();
 							m_caretState = false;
@@ -244,6 +232,13 @@ namespace BUI {
 			}
 		}
 
+		if (event.type == uievent_mouseleave) {
+			if (m_mouseState) {
+				SetClassLong(m_pUIManager->GetPaintWindow(), GCL_HCURSOR, (LONG)LoadCursor(NULL,IDC_ARROW));
+				m_mouseState = false;
+			}
+		}
+
 		if (event.type == uievent_char) {
 			onChar(event.chKey);
 			Invalidate();
@@ -251,6 +246,7 @@ namespace BUI {
 
 		if (event.type == uievent_keydown) {
 			onKeyDown(event.chKey);
+
 			Invalidate();
 		}
 
@@ -289,46 +285,14 @@ namespace BUI {
 
 	void BUIEdit::PaintText(HDC hDC)
 	{
-		// select前面部
-		m_textDesc.content = m_strText.substr(m_beginDrawPlace);
-		if (!m_selectString.empty()) {
-			bstring::size_type findPlace = m_strText.find(m_selectString);
-			if (findPlace != bstring::npos) {
-				m_textDesc.content = m_strText.substr(m_beginDrawPlace, findPlace - m_beginDrawPlace);
-			}
-		}
-		RectF rcf(m_rcPaint.left, m_rcPaint.top, m_rcPaint.right - m_rcPaint.left, m_rcPaint.bottom - m_rcPaint.top);
-		BRenderEngineManager::GetInstance()->RenderEngine()->DrawText(hDC, rcf, m_textDesc);
-
-		// select部分
-		if (!m_selectString.empty()) {
-			TextDescription textDesc;
-			memset(&textDesc, 0, sizeof(TextDescription));
-			textDesc.textColor = customcolor_red;
-			textDesc.textColor1 = customcolor_red;
-			textDesc.fontSize = 14;
-			textDesc.style = FontStyleRegular;
-			textDesc.align = ALIGNMENTDEFAULT;
-			textDesc.formatFlags = (StringFormatFlagsNoWrap | StringFormatFlagsLineLimit | StringFormatFlagsNoFitBlackBox);
-			textDesc.content = m_selectString;
-
-			BRenderEngineManager::GetInstance()->RenderEngine()->DrawText(hDC, m_rcSelectString, textDesc);
-		}
-		// select后面部分
-		if (!m_selectString.empty()) {
-			bstring::size_type findPlace = m_strText.find(m_selectString);
-			if (findPlace != bstring::npos && findPlace + m_selectString.length() < m_strText.length()) {
-				SizeF szText = getTextSize(m_strText.substr(m_beginDrawPlace, m_selectString.length() + findPlace - m_beginDrawPlace));
-				if (szText.Width < getContentRect().right - getContentRect().left) {
-					m_textDesc.content = m_strText.substr(findPlace + m_selectString.length());
-					RectF rcPaint;
-					rcPaint.X = getContentRect().left + szText.Width;
-					rcPaint.Width = getContentRect().right - rcPaint.X;
-					rcPaint.Y = getContentRect().top;
-					rcPaint.Height = getContentRect().bottom - getContentRect().top;
-					BRenderEngineManager::GetInstance()->RenderEngine()->DrawText(hDC, rcPaint, m_textDesc);
-				}
-			}
+		RECT rcPaint;
+		if (IntersectRect(&rcPaint, &m_rcPaint, &getContentRect())) {
+			m_textDesc.content = m_strText.substr(m_beginDrawPlace);
+			m_textDesc.selectedBegin = m_selectedBeginPalce - m_beginDrawPlace;
+			m_textDesc.selectedCount = m_selectedEndPlace - m_selectedBeginPalce;
+			RectF rcf(rcPaint.left, rcPaint.top, rcPaint.right - rcPaint.left, rcPaint.bottom - rcPaint.top);
+			m_textDesc.selectedBkColor = 0xAACC6600;
+			BRenderEngineManager::GetInstance()->RenderEngine()->DrawText(hDC, rcf, m_textDesc);
 		}
 	}
 
@@ -339,31 +303,78 @@ namespace BUI {
 
 	void BUIEdit::onKeyDown(TCHAR chKey)
 	{
-		if (m_caretState) {
-			switch (chKey) {
-			case VK_DELETE:
-				{
-					if (m_caretPlace != m_strText.length()) {
-						m_strText.erase(m_caretPlace, 1);
-						SizeF szText = getTextSize(m_strText);
-						if (szText.Width > getContentRect().right - getContentRect().left) {
-							SizeF szDrawText = getTextSize(m_strText.substr(m_beginDrawPlace, m_strText.length() - m_beginDrawPlace));
-							if (szDrawText.Width > getContentRect().right - getContentRect().left) {
-								m_beginDrawPlace--;
-								szDrawText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace));
-								if (szDrawText.Width < getContentRect().right - getContentRect().left) {
-									m_pUIManager->SetCaretPos(getContentRect().left + szDrawText.Width, getContentRect().top);
-								} else {
-									m_pUIManager->SetCaretPos(getContentRect().right, getContentRect().top);
-								}
+		bstringstream woss;
+		woss << L"buiedit::onKeyDown --" << chKey << endl;
+		::OutputDebugString(woss.str().c_str());
+		switch (chKey) {
+		case VK_DELETE:
+			{
+				if (m_caretPlace != m_strText.length()) {
+					m_strText.erase(m_caretPlace, 1);
+					SizeF szText = getTextSize(m_strText);
+					if (szText.Width > getContentRect().right - getContentRect().left) {
+						SizeF szDrawText = getTextSize(m_strText.substr(m_beginDrawPlace, m_strText.length() - m_beginDrawPlace));
+						if (szDrawText.Width > getContentRect().right - getContentRect().left) {
+							m_beginDrawPlace--;
+							szDrawText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace));
+							if (szDrawText.Width < getContentRect().right - getContentRect().left) {
+								m_pUIManager->SetCaretPos(getContentRect().left + ceil(szDrawText.Width), getContentRect().top);
+							} else {
+								m_pUIManager->SetCaretPos(getContentRect().right, getContentRect().top);
 							}
 						}
 					}
 				}
-				break;
+			}
+			break;
 
-			case VK_LEFT:
-				{
+		case VK_LEFT:
+			{
+				// 选择内容
+				if ((GetKeyState(VK_SHIFT) & 0x8000) != 0) {
+					if (m_selectedEndPlace == 0) {
+						if (m_caretPlace != 0) {
+							m_selectedEndPlace = m_caretPlace;
+							m_selectedBeginPalce = m_caretPlace - 1;
+						}
+					} else {
+						if (m_selectedBeginPalce == m_caretPlace) {
+							m_selectedEndPlace--;
+							if (m_selectedBeginPalce == m_selectedEndPlace) {
+								m_selectedBeginPalce = m_selectedEndPlace = 0;
+								if (!m_caretState) {
+									m_pUIManager->ShowCaret();
+									m_caretState = true;
+								}
+							}
+						} else {
+							if (m_selectedBeginPalce != 0) {
+								if (m_selectedBeginPalce == m_beginDrawPlace) {
+									if (m_beginDrawPlace > 5) {
+										m_beginDrawPlace -= 5;
+									} else {
+										m_beginDrawPlace = 0;
+									}
+								}
+								m_selectedBeginPalce--;
+							}
+						}
+					}
+
+					if (m_selectedBeginPalce < m_selectedEndPlace) {
+						if (m_caretState) {
+							m_pUIManager->HideCaret();
+							m_caretState = false;
+						}
+					}
+				} else { // 移动光标
+					if (m_selectedBeginPalce < m_selectedEndPlace) {
+						if (!m_caretState) {
+							m_pUIManager->ShowCaret();
+							m_caretState = true;
+						}
+						m_caretPlace = m_selectedBeginPalce;
+					}
 					if (m_caretPlace != 0) {
 						if (m_beginDrawPlace == m_caretPlace) {
 							if (m_beginDrawPlace > 5) {
@@ -377,14 +388,63 @@ namespace BUI {
 
 					SizeF szText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace));
 					if (szText.Width < getContentRect().right - getContentRect().left) {
-						m_pUIManager->SetCaretPos(getContentRect().left + szText.Width, getContentRect().top);
+						m_pUIManager->SetCaretPos(getContentRect().left + ceil(szText.Width), getContentRect().top);
 					} else {
 						m_pUIManager->SetCaretPos(getContentRect().right, getContentRect().top);
 					}
-				}
-				break;
 
-			case VK_RIGHT:
+					m_selectedBeginPalce = m_selectedEndPlace = 0;
+				}
+			}
+			break;
+
+		case VK_RIGHT:
+			// 选择内容
+			if ((GetKeyState(VK_SHIFT) & 0x8000) != 0) {
+				if (m_selectedEndPlace == 0) {
+					if (m_caretPlace != m_strText.length()) {
+						m_selectedEndPlace = m_caretPlace + 1;
+						m_selectedBeginPalce = m_caretPlace;
+					}
+				} else {
+					if (m_selectedEndPlace == m_caretPlace) {
+						m_selectedBeginPalce++;
+						if (m_selectedBeginPalce == m_selectedEndPlace) {
+							m_selectedBeginPalce = m_selectedEndPlace = 0;
+							if (!m_caretState) {
+								m_pUIManager->ShowCaret();
+								m_caretState = true;
+							}
+						}
+					} else {
+						if (m_selectedEndPlace < m_strText.length()) {
+							m_selectedEndPlace++;
+							SizeF szDrawText = getTextSize(m_strText.substr(m_beginDrawPlace, m_selectedEndPlace - m_beginDrawPlace + 1));
+							if (szDrawText.Width > getContentRect().right - getContentRect().left) {
+								if (m_beginDrawPlace + 5 < m_strText.length()) {
+									m_beginDrawPlace += 5;
+								} else {
+									m_beginDrawPlace += m_strText.length() - m_beginDrawPlace;
+								}
+							}
+						}
+					}
+				}
+
+				if (m_selectedBeginPalce < m_selectedEndPlace) {
+					if (m_caretState) {
+						m_pUIManager->HideCaret();
+						m_caretState = false;
+					}
+				}
+			} else {	// 移动光标
+				if (m_selectedBeginPalce < m_selectedEndPlace) {
+					if (!m_caretState) {
+						m_pUIManager->ShowCaret();
+						m_caretState = true;
+					}
+					m_caretPlace = m_selectedEndPlace;
+				}
 				if (m_caretPlace < m_strText.length()) {
 					SizeF szDrawText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace + 1));
 					if (szDrawText.Width > getContentRect().right - getContentRect().left) {
@@ -395,19 +455,26 @@ namespace BUI {
 						}
 					}
 					m_caretPlace++;
-
-					SizeF szText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace));
-					if (szText.Width < getContentRect().right - getContentRect().left) {
-						m_pUIManager->SetCaretPos(getContentRect().left + szText.Width, getContentRect().top);
-					} else {
-						m_pUIManager->SetCaretPos(getContentRect().right, getContentRect().top);
-					}
 				}
-				break;
 
-			default:
-				break;
+				SizeF szText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace));
+				if (szText.Width < getContentRect().right - getContentRect().left) {
+					m_pUIManager->SetCaretPos(getContentRect().left + ceil(szText.Width), getContentRect().top);
+				} else {
+					m_pUIManager->SetCaretPos(getContentRect().right, getContentRect().top);
+				}
+
+				m_selectedBeginPalce = m_selectedEndPlace = 0;
 			}
+
+			break;
+
+		case VK_TAB:
+			//PostMessageW(GetParent(hWnd), WM_NEXTDLGCTL, GetKeyState(VK_SHIFT) & 0x8000, FALSE);
+			break;
+
+		default:
+			break;
 		}
 	}
 
@@ -427,34 +494,36 @@ namespace BUI {
 					}
 					SizeF szText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace));
 					if (szText.Width < getContentRect().right - getContentRect().left) {
-						m_pUIManager->SetCaretPos(getContentRect().left + szText.Width, getContentRect().top);
+						m_pUIManager->SetCaretPos(getContentRect().left + ceil(szText.Width), getContentRect().top);
 					} else {
 						m_pUIManager->SetCaretPos(getContentRect().right, getContentRect().top);
 					}
 				}
 				break;
 
+			case VK_TAB:
+				break;
+
 			default:
 				{
 					if (m_caretPlace == m_strText.length()) {
 						m_strText.append(1, chKey);
-						m_caretPlace++;
-						SizeF szText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace));
-						if (szText.Width > getContentRect().right - getContentRect().left) {
-							m_beginDrawPlace++;
-						}
 					} else {
 						m_strText.insert(m_caretPlace, 1, chKey);
-						m_caretPlace++;
-						SizeF szText = getTextSize(m_strText.substr(m_beginDrawPlace, m_strText.length() - m_beginDrawPlace));
-						if (szText.Width > getContentRect().right - getContentRect().left) {
+					}
+					m_caretPlace++;
+					SizeF szText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace));
+					if (szText.Width > getContentRect().right - getContentRect().left) {
+						if (m_caretPlace == m_strText.length()) {
 							m_beginDrawPlace++;
+						} else {
+							m_beginDrawPlace += (m_strText.length() - m_caretPlace < 5) ? m_strText.length() - m_caretPlace : 5;
 						}
 					}
 
-					SizeF szText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace));
+					szText = getTextSize(m_strText.substr(m_beginDrawPlace, m_caretPlace - m_beginDrawPlace));
 					if (szText.Width < getContentRect().right - getContentRect().left) {
-						m_pUIManager->SetCaretPos(getContentRect().left + szText.Width, getContentRect().top);
+						m_pUIManager->SetCaretPos(getContentRect().left + ceil(szText.Width), getContentRect().top);
 					} else {
 						m_pUIManager->SetCaretPos(getContentRect().right, getContentRect().top);
 					}
@@ -496,6 +565,9 @@ namespace BUI {
 					return m_beginDrawPlace + mid;
 				}
 			}
+			if (hight < 0) {
+				return m_beginDrawPlace + low;
+			}
 			bstring hightString = m_strText.substr(m_beginDrawPlace, hight);
 			SizeF szTextHight = getTextSize(hightString);
 			bstring lowString = m_strText.substr(m_beginDrawPlace, low);
@@ -512,8 +584,8 @@ namespace BUI {
 	SizeF BUIEdit::getTextSize(const bstring text)
 	{
 		m_textDesc.content = text;
-		SizeF szText = BRenderEngineManager::GetInstance()->RenderEngine()->GetTextSize(m_pUIManager->GetPaintDC(), m_textDesc);
-		return szText;
+		RectF rcf(getContentRect().left, getContentRect().top, getContentRect().right - getContentRect().left + 100, getContentRect().bottom - getContentRect().top);
+		return BRenderEngineManager::GetInstance()->RenderEngine()->GetTextSize(m_pUIManager->GetPaintDC(), rcf, m_textDesc);
 		//return BRenderEngineManager::GetInstance()->RenderEngine()->GetTextSize(text, m_textDesc.fontFamily, m_textDesc.fontSize, m_textDesc.style);
 	}
 

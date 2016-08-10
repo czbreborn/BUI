@@ -15,11 +15,13 @@
 
 #include <windows.h>
 #include <windowsx.h>
+#include <commctrl.h>
 #include <tchar.h>
 
 // 使用stl模板没有导出而报的警告
 #pragma warning(disable:4251)
 
+#include <math.h>
 #include <sstream>
 #include <string>
 #include <map>

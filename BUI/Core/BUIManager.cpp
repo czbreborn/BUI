@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#include <zmouse.h>
 namespace BUI{
 	WMPROCMAP BUIManager::s_wmProcMap;
 
@@ -9,6 +9,7 @@ namespace BUI{
 		m_name(_T("")),
 		m_bUpdateNeeded(false),
 		m_bResizeNeeded(false),
+		m_bMouseTrack(false),
 		m_rootWidget(NULL),
 		m_focusedWidget(NULL),
 		m_eventClickWidget(NULL),
@@ -25,7 +26,9 @@ namespace BUI{
 		WMPROCBIND(WM_PAINT, BUIManager::OnPaint);
 
 		// Êó±êÏûÏ¢
+		WMPROCBIND(WM_MOUSEHOVER, BUIManager::OnMouseHover);
 		WMPROCBIND(WM_MOUSEMOVE, BUIManager::OnMouseMove);
+		WMPROCBIND(WM_MOUSELEAVE, BUIManager::OnMouseLeave);
 		WMPROCBIND(WM_LBUTTONDOWN, BUIManager::OnLButtonDown);
 		WMPROCBIND(WM_LBUTTONUP, BUIManager::OnLButtonUp);
 		WMPROCBIND(WM_LBUTTONDBLCLK, BUIManager::OnLButtonDBClick);
@@ -281,8 +284,37 @@ namespace BUI{
 		return 0;
 	}
 
+	LRESULT BUIManager::OnMouseHover(WPARAM wParam, LPARAM lParam)
+	{
+		POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+		BUIWidget* pNewWidget = FindControl(pt);
+		if (pNewWidget != NULL)
+			return 1;
+
+		if (m_eventClickWidget != NULL) {
+			TEventUI event = { 0 };
+			event.ptMouse = pt;
+			event.type = uievent_mousehover;
+			event.pSender = m_eventClickWidget;
+			event.dwTimestamp = ::GetTickCount();
+			m_eventClickWidget->Event(event);
+		}
+
+		return 1;
+	}
+
 	LRESULT BUIManager::OnMouseMove(WPARAM wParam, LPARAM lParam)
 	{
+		if (!m_bMouseTrack) {
+			TRACKMOUSEEVENT tme = { 0 };
+			tme.cbSize = sizeof(TRACKMOUSEEVENT);
+			tme.dwFlags = TME_HOVER | TME_LEAVE;
+			tme.hwndTrack = m_hWndPaint;
+			tme.dwHoverTime = 400;
+			::TrackMouseEvent(&tme);
+			m_bMouseTrack = true;
+		}
+
 		POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
 		m_ptLastMousePos = pt;
 		BUIWidget* pNewWidget = FindControl(pt);
@@ -305,7 +337,7 @@ namespace BUI{
 			event.type = uievent_mouseenter;
 			event.pSender = pNewWidget;
 			pNewWidget->Event(event);
-			m_eventClickWidget = NULL;
+			m_eventClickWidget = pNewWidget;
 		}
 
 		if (m_eventClickWidget != NULL) {
@@ -319,6 +351,14 @@ namespace BUI{
 		}
 
 		return 0;
+	}
+
+	LRESULT BUIManager::OnMouseLeave(WPARAM wParam, LPARAM lParam)
+	{
+		if (m_bMouseTrack) {
+			::SendMessage(m_hWndPaint, WM_MOUSEMOVE, 0, (LPARAM)-1);
+		}
+		return 1;
 	}
 
 	LRESULT BUIManager::OnLButtonDown(WPARAM wParam, LPARAM lParam)
@@ -458,6 +498,10 @@ namespace BUI{
 			event.wKeyState = lParam;
 			event.dwTimestamp = ::GetTickCount();
 			m_focusedWidget->Event(event);
+
+			bstringstream woss;
+			woss << L"OnKeyDown ::" << wParam << L"::" << lParam << L"type" << m_focusedWidget->GetType() << endl;
+			::OutputDebugString(woss.str().c_str());
 		}
 
 		return 1;

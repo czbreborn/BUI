@@ -341,10 +341,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Core\BUIObject.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Core\BUIWidgetBuilder.h"
 					>
 				</File>
@@ -374,6 +370,10 @@
 				</File>
 				<File
 					RelativePath=".\Render\BRenderEngineManager.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Core\BUIObject.h"
 					>
 				</File>
 			</Filter>

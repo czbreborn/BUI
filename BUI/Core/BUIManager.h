@@ -60,7 +60,9 @@ namespace BUI{
 		LRESULT OnEraseBkgnd(WPARAM wParam, LPARAM lParam);
 		LRESULT OnPaint(WPARAM wParam, LPARAM lParam);
 
+		LRESULT OnMouseHover(WPARAM wParam, LPARAM lParam);
 		LRESULT OnMouseMove(WPARAM wParam, LPARAM lParam);
+		LRESULT OnMouseLeave(WPARAM wParam, LPARAM lParam);
 		LRESULT OnLButtonDown(WPARAM wParam, LPARAM lParam);
 		LRESULT OnLButtonUp(WPARAM wParam, LPARAM lParam);
 		LRESULT OnLButtonDBClick(WPARAM wParam, LPARAM lParam);
@@ -93,6 +95,7 @@ namespace BUI{
 		SIZE m_szMinWindow;
 		SIZE m_szMaxWindow;
 
+		bool m_bMouseTrack;
 		BUIWidget* m_rootWidget;
 		BUIWidget* m_focusedWidget;
 		BUIWidget* m_eventClickWidget;

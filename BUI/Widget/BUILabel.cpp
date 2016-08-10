@@ -6,13 +6,7 @@ namespace BUI{
 
 	BUILabel::BUILabel()
 	{
-		memset(&m_textDesc, 0, sizeof(TextDescription));
-		m_textDesc.textColor = customcolor_black;
-		m_textDesc.textColor1 = customcolor_black;
 		m_textDesc.fontSize = 14;
-		m_textDesc.style = FontStyleRegular;
-		m_textDesc.align = ALIGNMENTDEFAULT;
-		m_textDesc.formatFlags = StringFormatFlagsNoWrap;
 	}
 
 	BUILabel::~BUILabel()
@@ -111,62 +105,51 @@ namespace BUI{
 
 	void BUILabel::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
 	{
-		if (_tcscmp(pstrName, _T("align")) == 0) 
-		{
+		if (_tcscmp(pstrName, _T("align")) == 0) {
 			UINT align = GetTextAlign();
 			align &= 0xF0;
-			if (_tcsstr(pstrValue, _T("left")) != NULL)
-			{
+			if (_tcsstr(pstrValue, _T("left")) != NULL) {
 				align |= textalignment_left;
-			}
-			if (_tcsstr(pstrValue, _T("center")) != NULL)
-			{
+			} 
+			if (_tcsstr(pstrValue, _T("center")) != NULL) {
 				align |= textalignment_center;
-			}
-			if (_tcsstr(pstrValue, _T("right")) != NULL)
-			{
+			} 
+			if (_tcsstr(pstrValue, _T("right")) != NULL) {
 				align |= textalignment_right;
 			}
 			SetTextAlign(align);
-		}
-		else if (_tcscmp(pstrName, _T("valign")) == 0)
-		{
+		} else if (_tcscmp(pstrName, _T("valign")) == 0) {
 			UINT align = GetTextAlign();
 			align &= 0x0F;
-			if (_tcsstr(pstrValue, _T("top")) != NULL)
-			{
+			if (_tcsstr(pstrValue, _T("top")) != NULL) {
 				align |= textalignment_top;
 			}
-			if (_tcsstr(pstrValue, _T("vcenter")) != NULL)
-			{
+			if (_tcsstr(pstrValue, _T("vcenter")) != NULL) {
 				align |= textalignment_vcenter;
 			}
-			if (_tcsstr(pstrValue, _T("bottom")) != NULL)
-			{
+			if (_tcsstr(pstrValue, _T("bottom")) != NULL) {
 				align |= textalignment_bottom;
 			}
 			SetTextAlign(align);
-		}
-		else if (_tcscmp(pstrName, _T("textcolor")) == 0)
-		{
-			if (*pstrValue == _T('#')) 
+		} else if (_tcscmp(pstrName, _T("textcolor")) == 0) {
+			if (*pstrValue == _T('#')) {
 				pstrValue = ::CharNext(pstrValue);
+			}
 
 			LPTSTR pstr = NULL;
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetTextColor(clrColor);
-		}
-		else if (_tcscmp(pstrName, _T("textcolor1")) == 0) 
-		{
-			if (*pstrValue == _T('#')) 
+		} else if (_tcscmp(pstrName, _T("textcolor1")) == 0) {
+			if (*pstrValue == _T('#')) {
 				pstrValue = ::CharNext(pstrValue);
+			}
 
 			LPTSTR pstr = NULL;
 			DWORD clrColor = _tcstoul(pstrValue, &pstr, 16);
 			SetTextColor1(clrColor);
-		}
-		else 
-		{
+		} else if (_tcscmp(pstrName, _T("glow")) == 0) {
+			SetEnabledGlow(_tcscmp(pstrValue, _T("true")) == 0);
+		}else {
 			BUIWidget::SetAttribute(pstrName, pstrValue);
 		}
 	}

@@ -55,9 +55,7 @@ namespace BUI{
 			className.append(nodeName);
 			BUIWidget* newWidget = BUIWidgetFactory::GetInstance()->CreateWidget(className.c_str());
 			assert(newWidget);
-			bstringstream woss;
-			woss << newWidget->GetType() << endl;
-			::OutputDebugString(woss.str().c_str());
+
 			// Init default attributes
 			if (m_pWindowManager) {
 				newWidget->SetManager(m_pWindowManager, NULL);

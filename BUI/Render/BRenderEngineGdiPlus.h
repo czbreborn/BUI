@@ -27,7 +27,7 @@ namespace BUI{
 		virtual bool DrawWindowRoundRgn(HWND hwnd, const RECT& rc, int width, int height);
 		virtual void DrawCanvas(BCanvas* canvas, const RECT& rc);
 
-		virtual SizeF GetTextSize(HDC hdc, const TextDescription& textDesc);
+		virtual SizeF GetTextSize(HDC hdc, const RectF& rc, const TextDescription& textDesc);
 		virtual SizeF GetTextSize(const bstring text, const bstring& fontFamily, const DWORD fontSize, UINT style);
 
 	private:
@@ -46,6 +46,7 @@ namespace BUI{
 
 	private:
 		ULONG_PTR m_uGdiPlus;
+		bstring m_defaultFamily;
 
 	private:
 		static BRenderEngineGdiPlus s_renderEngineGdiPlus;

@@ -16,12 +16,6 @@ namespace BUI{
 		virtual ~BUIEdit(void);
 
 	public:
-		// 绘制相关
-		void SetPadding(const LONG& padding);
-		void SetPadding(const SIZE& szPadding);
-		void SetPadding(const RECT& rcPadding);
-		RECT GetPadding() const;
-
 		// 文字相关限制
 		void SetMaxChar(UINT uMax);
 		UINT GetMaxChar();
@@ -62,9 +56,9 @@ namespace BUI{
 		SizeF getTextSize(const bstring text);
 		RECT getContentRect();
 
-	private:
+	private: 
+		bool m_mouseState;
 		bool m_caretState;
-		RECT m_rcPadding;
 		UINT m_uMaxChar;
 		bool m_readOnly;
 		bool m_passwordMode;
@@ -78,6 +72,8 @@ namespace BUI{
 		bstring m_disabledImage;
 		DWORD m_editBkColor;
 
+		UINT m_selectedBeginPalce;	// 选中内容的其实位置
+		UINT m_selectedEndPlace;	// 选中内容的结束位置
 		UINT m_caretPlace;			// 位于编辑框那个字符后面
 		UINT m_beginDrawPlace;		// 开始绘制的字符位置
 		

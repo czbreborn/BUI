@@ -22,6 +22,10 @@ namespace BUI{
 	{
 		GdiplusStartupInput input;
 		GdiplusStartup(&m_uGdiPlus, &input, NULL);
+
+		LOGFONT lfFont;
+		SystemParametersInfo(SPI_GETICONTITLELOGFONT, sizeof(LOGFONT), &lfFont, 0);
+		m_defaultFamily = lfFont.lfFaceName;
 	}
 
 	void BRenderEngineGdiPlus::uninit()
@@ -108,7 +112,7 @@ namespace BUI{
 
 	void BRenderEngineGdiPlus::drawGlowText(Graphics& grap, const RectF& rc, const TextDescription& textDesc)
 	{
-		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
+		bstring strfamily(m_defaultFamily);
 		if (!textDesc.fontFamily.empty())
 			strfamily = textDesc.fontFamily;
 		FontFamily fontFamily(strfamily.c_str());
@@ -143,7 +147,7 @@ namespace BUI{
 
 	void BRenderEngineGdiPlus::drawStrokeText(Graphics& grap, const RectF& rc, const TextDescription& textDesc)
 	{
-		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
+		bstring strfamily(m_defaultFamily);
 		if (!textDesc.fontFamily.empty())
 			strfamily = textDesc.fontFamily;
 		FontFamily fontFamily(strfamily.c_str());
@@ -259,7 +263,7 @@ namespace BUI{
 			return;
 		}
 
-		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
+		bstring strfamily(m_defaultFamily);
 		if (!textDesc.fontFamily.empty())
 			strfamily = textDesc.fontFamily;
 		FontFamily fontFamily(strfamily.c_str());
@@ -267,10 +271,51 @@ namespace BUI{
 		stringFormat.SetAlignment(convertAlignment(textDesc.align));
 		stringFormat.SetLineAlignment(convertLineAlignment(textDesc.align));
 		stringFormat.SetFormatFlags(textDesc.formatFlags);
+		stringFormat.SetTrimming(StringTrimmingNone);
 
 		Gdiplus::Font font(&fontFamily, textDesc.fontSize, textDesc.style, UnitPixel);
 		SolidBrush solidBrush(textDesc.textColor);
+
+		bool needDrawSelect = false;
+		if (textDesc.selectedBegin != -1 &&
+			textDesc.selectedCount > 0) {
+			needDrawSelect = true;
+		}
+		
+		Region selectedRegion;
+		if (needDrawSelect) {
+			CharacterRange charRange(textDesc.selectedBegin, textDesc.selectedCount);
+			stringFormat.SetMeasurableCharacterRanges(1, &charRange);	
+			grap.MeasureCharacterRanges(textDesc.content.c_str(), -1, &font, rc, &stringFormat, 1, &selectedRegion);
+		}
+		
 		grap.DrawString(textDesc.content.c_str(), -1, &font, rc, &stringFormat, &solidBrush);
+
+		if (needDrawSelect) {
+			Gdiplus::Rect rcSelected;
+			selectedRegion.GetBounds(&rcSelected, &grap);
+			INT width = rcSelected.Width;
+			INT height = rcSelected.Height;
+			BYTE* buffer = new BYTE[width * height * 4]; 
+			BitmapData bitmapData;
+			bitmapData.Width = width;
+			bitmapData.Height = height;
+			bitmapData.Stride = width * 4;
+			bitmapData.PixelFormat = canvas->GetCanvas()->GetPixelFormat();
+			bitmapData.Scan0 = buffer;
+			canvas->GetCanvas()->LockBits(&rcSelected, ImageLockModeRead | ImageLockModeWrite |ImageLockModeUserInputBuf, canvas->GetCanvas()->GetPixelFormat(), &bitmapData);
+			int count = width * height * 4;
+			for (int i = 0; i < count ; i+=4) {
+				Color bkColor(textDesc.selectedBkColor);
+				buffer[i+3] = bkColor.GetA();	// A
+				buffer[i+2] = ~(BYTE)(buffer[i+2] * bkColor.GetR() / 255.0);	// R
+				buffer[i+1] = ~(BYTE)(buffer[i+1] * bkColor.GetG() / 255.0);	// G
+				buffer[i] = ~(BYTE)(buffer[i] * bkColor.GetB() / 255.0);		// B
+			}
+			canvas->GetCanvas()->UnlockBits(&bitmapData);
+			delete[] buffer;
+			buffer = NULL;
+		}
 	}
 
 	void BRenderEngineGdiPlus::DrawImage(HDC hdc, const ImageDescription& imageDesc)
@@ -376,32 +421,44 @@ namespace BUI{
 		grap.DrawCachedBitmap(&cacheBmp, 0, 0);
 	}
 
-	SizeF BRenderEngineGdiPlus::GetTextSize(HDC hdc, const TextDescription& textDesc)
+	SizeF BRenderEngineGdiPlus::GetTextSize(HDC hdc, const RectF& rc, const TextDescription& textDesc)
 	{
+		if (textDesc.content.empty()) {
+			return SizeF(0.0f, 0.0f);
+		}
+
 		BCanvas* canvas = BRenderCanvas::GetInstance()->GetDCCanvas(hdc);
 		assert(canvas);
 		Graphics grap(canvas->GetCanvas());
 		grap.SetSmoothingMode(SmoothingModeAntiAlias);
 		grap.SetTextRenderingHint(TextRenderingHintSystemDefault);
-
-		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
-		if (!textDesc.fontFamily.empty())
-			strfamily = textDesc.fontFamily;
-		FontFamily fontFamily(strfamily.c_str());
+		
+		CharacterRange charRange(0, textDesc.content.length());
 		StringFormat stringFormat;
 		stringFormat.SetAlignment(convertAlignment(textDesc.align));
 		stringFormat.SetLineAlignment(convertLineAlignment(textDesc.align));
 		stringFormat.SetFormatFlags(textDesc.formatFlags);
+		stringFormat.SetMeasurableCharacterRanges(1, &charRange);
+		int count = stringFormat.GetMeasurableCharacterRangeCount();
+		stringFormat.SetTrimming(StringTrimmingNone);
 
-		RectF rcf;
+		bstring strfamily(m_defaultFamily);
+		if (!textDesc.fontFamily.empty())
+			strfamily = textDesc.fontFamily;
+		FontFamily fontFamily(strfamily.c_str());
 		Gdiplus::Font font(&fontFamily, textDesc.fontSize, textDesc.style, UnitPixel);
-		grap.MeasureString(textDesc.content.c_str(), textDesc.content.length(), &font, PointF(0, 0), &stringFormat, &rcf);
-		return SizeF(rcf.Width, rcf.Height);
+
+		Region charRegion;
+		grap.MeasureCharacterRanges(textDesc.content.c_str(), -1, &font, rc, &stringFormat, count, &charRegion);
+
+		RectF rcText;
+		charRegion.GetBounds(&rcText, &grap);
+		return SizeF(rcText.Width, rcText.Height);
 	}
 
 	SizeF BRenderEngineGdiPlus::GetTextSize(const bstring text, const bstring& fontFamily, const DWORD fontSize, UINT style)
 	{
-		bstring strfamily(_T("Î¢ÈíÑÅºÚ"));
+		bstring strfamily(m_defaultFamily);
 		if (!fontFamily.empty())
 			strfamily = fontFamily;
 		FontFamily family(strfamily.c_str());
